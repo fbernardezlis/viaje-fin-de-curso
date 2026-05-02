@@ -1,6 +1,8 @@
+# Imágenes vía mirror.gcr.io (mismo contenido que Docker Hub) para evitar fallos TLS
+# con el CDN R2 (docker-images-prod…r2.cloudflarestorage.com) tras proxies corporativos.
 services:
   db:
-    image: mariadb:11.4
+    image: mirror.gcr.io/library/mariadb:11.4
     container_name: vfc-db
     restart: unless-stopped
     environment:
@@ -23,7 +25,7 @@ services:
       start_period: 15s
 
   wordpress:
-    image: wordpress:6.7-php8.2-apache
+    image: mirror.gcr.io/library/wordpress:6.7-php8.2-apache
     container_name: vfc-wordpress
     restart: unless-stopped
     depends_on:

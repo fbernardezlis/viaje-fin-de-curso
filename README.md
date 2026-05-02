@@ -30,7 +30,7 @@ Tienda WordPress con WooCommerce, pensada para ser ligera y fácil de extender c
 
 | Ruta | Descripción |
 |------|-------------|
-| `docker-compose.yml` | WordPress (Apache + PHP 8.2) y MariaDB 11.4 |
+| `docker-compose.yml` | WordPress (Apache + PHP 8.2) y MariaDB 11.4 (imágenes desde `mirror.gcr.io`, equivalentes a las de Docker Hub) |
 | `docker/php/zz-performance.ini` | OPcache y límites razonables para desarrollo/tienda |
 | `wp-content/plugins/` | Plugins personalizados del proyecto |
 | `wp-content/themes/` | Temas hijos o personalizados |
@@ -48,7 +48,9 @@ docker compose down
 
 ## Si falla la descarga de imágenes (TLS / certificado)
 
-Si al hacer `docker compose up` aparece algo como `tls: failed to verify certificate` hacia `*.r2.cloudflarestorage.com` (CDN de capas de Docker Hub), el cliente HTTPS ve un certificado que **no coincide con el nombre del servidor** o no confía en la CA (muy habitual con **proxy o inspección SSL corporativa**).
+El `docker-compose.yml` usa **`mirror.gcr.io/library/…`** (espejo de Google de las imágenes oficiales de Docker Hub) para evitar en muchos entornos el error TLS contra el CDN R2 de Hub (`*.r2.cloudflarestorage.com`).
+
+Si aun así falla el `pull`, el cliente HTTPS puede estar viendo un certificado que **no coincide con el nombre del servidor** o no confía en la CA (muy habitual con **proxy o inspección SSL corporativa**).
 
 **Qué puedes hacer (elige según tu entorno):**
 
@@ -58,9 +60,11 @@ Si al hacer `docker compose up` aparece algo como `tls: failed to verify certifi
 
 Más contexto en el [foro de Docker sobre errores x509 al hacer pull](https://forums.docker.com/t/tls-failed-to-verify-certificate-x509-docker-hub/137486).
 
-Cuando `docker pull wordpress:6.7-php8.2-apache` y `docker pull mariadb:11.4` funcionen sin error, en la carpeta del proyecto:
+Para probar solo las descargas (mismas imágenes que usa el compose):
 
 ```powershell
-cd "c:\Users\fber\OneDrive - Dempo Digital Solutions S.L\Documentos\Projects\viaje-fin-de-curso"
-docker compose up -d
+docker pull mirror.gcr.io/library/wordpress:6.7-php8.2-apache
+docker pull mirror.gcr.io/library/mariadb:11.4
 ```
+
+Luego, en la carpeta del proyecto: `docker compose up -d`.
