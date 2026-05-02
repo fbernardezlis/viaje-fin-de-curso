@@ -1,0 +1,24 @@
+/*
+Theme Name:     VFC Portal
+Theme URI:      https://github.com/fbernardezlis/viaje-fin-de-curso
+Description:    Tema hijo de Twenty Twenty-Five para el portal del proyecto Viaje fin de curso (alumno, tutor, admin colegio).
+Author:         Dempo Digital Solutions
+Author URI:     https://dempo.digital
+Template:       twentytwentyfive
+Version:        0.1.0
+Requires at least: 6.6
+Requires PHP:   8.1
+Text Domain:    vfc-portal
+*/
+
+:root {
+    --vfc-color-primary: #1f6feb;
+    --vfc-color-accent: #2da44e;
+    --vfc-color-warning: #bf8700;
+    --vfc-color-danger: #cf222e;
+    --vfc-radius: 10px;
+}
+
+body.vfc-portal-active {
+    --wp--preset--color--primary: var(--vfc-color-primary);
+}
