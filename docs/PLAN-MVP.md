@@ -1,28 +1,28 @@
 # Plan de trabajo — MVP Viaje fin de curso (WordPress + WooCommerce)
 
-Documento vivo para alinear **pasarelas**, **alcance**, **arquitectura** y **fases** del desarrollo. Las comisiones de pago son **orientativas**: dependen del **contrato con la entidad** y del **volumen**; hay que pedir tarifas cerradas antes de decidir.
+Documento vivo para alinear **pasarelas**, **alcance**, **arquitectura** y **fases** del desarrollo. Las comisiones Redsys son **las del contrato con el banco**; hay que cerrarlas por escrito con la entidad.
 
 ---
 
-## 1. Pasarelas de pago (España, WooCommerce, coste / adopción)
+## 1. Pasarela de pago — **decisión: Redsys**
 
-Objetivo: **máxima conversión local** con **coste por transacción razonable** y **un solo comercio** (la plataforma cobra; luego se liquida al colegio fuera de WooCommerce).
+**Objetivo comercial:** un solo **comercio** (TPV Redsys de la plataforma); el cobro online va a esa cuenta; las **liquidaciones a colegios** siguen siendo **manuales** fuera de WooCommerce según el modelo acordado.
 
-| Opción | Perfil | Notas prácticas |
-|--------|--------|------------------|
-| **Redsys** (tarjeta, a menudo Bizum, Apple/Google Pay según contrato) | Muy habitual en España; suele ser la base de un TPV con entidad española | Comisiones **negociables** con el banco / adquirente; integración WooCommerce mediante **plugin** (a veces de pago + mantenimiento). Referencia de producto oficial: [Pasarela Redsys para WooCommerce](https://woocommerce.com/products/redsys-gateway/). |
-| **Bizum** | Muy deseado por familias en España | En la práctica suele ir **empaquetado** con Redsys/TPV del banco o con agregadores; el coste no es “un solo número” universal. |
-| **Stripe** | Excelente API, buena para equipos técnicos y pagos internacionales | Tarifas públicas tipo **% + fijo por operación**; suele ser **más cara** que un buen acuerdo Redsys solo nacional, pero **simple** de integrar. Útil si queréis **tarjeta + Apple/Google Pay** sin depender solo del paquete bancario. |
-| **PayPal** | Alta confianza percebida por algunos usuarios | Comisiones **suelen ser más altas**; conviene como **opcional** si métricas lo justifican. |
-| **MONEI / otros agregadores** | “Todo en uno” (incl. Bizum en algunos casos) | Valorar **T&C**, comisiones y **reembolsos** frente a contrato bancario directo. |
+**Por qué Redsys:** estándar en España, buen encaje con **tarjeta** y, si el banco lo incluye en el contrato, **Bizum** / wallets en el mismo TPV.
 
-**Recomendación de producto (no legal ni fiscal):**
+**Integración WooCommerce:** usar un **plugin de Redsys mantenido y probado** con vuestra versión de WooCommerce. Referencia habitual del ecosistema WooCommerce.com: [Pasarela Redsys para WooCommerce](https://woocommerce.com/products/redsys-gateway/) (revisar licencia, renovación y compatibilidad con **HPOS** en la ficha del producto antes de comprar).
 
-1. **Primario:** **Redsys + Bizum** (vía contrato con entidad / TPV que ya soporte Bizum en WooCommerce), negociando tarifas por volumen.  
-2. **Secundario (opcional):** **Stripe** si necesitáis **métodos** o **operativa** que el banco no cubra bien.  
-3. **PayPal** solo si tras lanzamiento veis abandono de carrito por falta de confianza; monitorizar coste.
+**Checklist técnico‑operativo (cuando tengáis banco):**
 
-**Plugins:** minimizar “zoo” de pasarelas; cada una es **superficie de error**, **PCI** y **reconciliación**. El desarrollo custom (`vfc-woocommerce`) debe ser **agnóstico** de pasarela en lo posible (engancharse a **pedidos WooCommerce** y estados), salvo requisitos puntuales (preautorización, etc.).
+1. Contrato TPV **Redsys** con la entidad (comisiones, plazos de liquidación bancaria al comercio, **reembolsos**).  
+2. Credenciales de **entorno de pruebas** (FUC, terminal, claves SHA) y paso a **producción**.  
+3. Confirmar si el paquete incluye **Bizum** y qué métodos adicionales activáis en el plugin.  
+4. Configurar en WooCommerce: moneda **EUR**, zonas de impuesto España, URLs de **callback** correctas en staging/producción (HTTPS).  
+5. Probar flujo completo: carrito → pago Redsys (test) → pedido **Completado** → que `vfc-woocommerce` reciba los hooks necesarios para saldos y bloqueos.
+
+**Bizum:** no es “otra pasarela” aparte: suele activarse **dentro del mismo contrato Redsys** y del plugin que elija el banco o el desarrollador. Si el banco **no** ofrece Bizum, valorarlo como incidencia de producto con el comercial, no solo como tema técnico.
+
+**Desarrollo custom:** `vfc-woocommerce` sigue siendo **agnóstico** de la pasarela en lo posible (pedidos y estados WooCommerce); solo se acopla a Redsys si hiciera falta algún comportamiento especial (p. ej. preautorización), documentándolo aparte.
 
 ---
 
@@ -93,7 +93,7 @@ Objetivo: **máxima conversión local** con **coste por transacción razonable**
 - **Sesión vinculada** + UI “salir”; cabecera colegio + alias.  
 - **Filtro catálogo** colegio con sesión; aviso checkout sin vínculo.  
 - Cálculo **% sin IVA**; persistencia en pedido; **Completado** + **15 días** + **reembolsos**.  
-- Pruebas con **2–3** métodos de pago de prueba (Stripe test + simulación Redsys si hay entorno).
+- Pruebas con **Redsys en modo pruebas** (tarjeta de test del banco / documentación del plugin); ampliar a **Bizum** solo si el contrato y el plugin lo soportan en sandbox.
 
 ### Fase 3 — Portal front
 
@@ -117,25 +117,25 @@ Objetivo: **máxima conversión local** con **coste por transacción razonable**
 | **Polylang + Woo gratis estricto** | Puede faltar cobertura de emails/tienda sin add-on | Decidir presupuesto para **add-on** o alcance i18n reducido en MVP |
 | **HPOS** | Plugins mal adaptados rompen pedidos | Probar `vfc-woocommerce` con HPOS activado en staging |
 | **Menores y tutores** | Responsabilidad del tratamiento y comunicaciones | Textos legales y flujos revisados con asesoría |
-| **Pasarelas** | Comisiones reales ≠ tablas de blog | Pedir **oferta cerrada** a banco / Stripe / agregador |
+| **Redsys / TPV** | Comisiones y plazos dependen del contrato; claves mal configuradas rompen el callback | **Oferta cerrada** con el banco; entorno **sandbox** antes de producción |
 | **Un solo comercio** | Facturación B2C y nombre en ticket | Definir con asesor fiscal quién es el **vendedor** en ticket |
 
 ---
 
 ## 6. Próximos pasos inmediatos
 
-1. **Cerrar** entidad bancaria / pasarela (**Redsys+BIZUM** como hipótesis principal) y **plugin** de integración WooCommerce homologado para vuestro caso.  
+1. **Contratar y configurar TPV Redsys** con la entidad bancaria; obtener **credenciales de test**; adquirir/configurar el **plugin Redsys** compatible con vuestra versión de WooCommerce y **HPOS** si lo usáis.  
 2. **Decidir** modelo de datos (**tablas propias** vs **CPT**) para Centro/Edición/Matrícula (impacto en informes y CSV).  
 3. **Crear repositorio de issues** (o tablero) a partir de las **fases 1–4** desglosadas en tareas de 1–2 días.  
 4. **Prototipo UI** del portal (wireframes) antes de implementar pantallas completas.
 
 ---
 
-## 7. Referencias externas (orientación general)
+## 7. Referencias externas
 
-- Alternativas y costes orientativos en ecommerce: [Raiola Networks — alternativas PayPal](https://raiolanetworks.com/blog/alternativas-paypal-ecommerce/).  
-- Producto oficial WooCommerce Redsys: [woocommerce.com — Redsys Gateway](https://woocommerce.com/products/redsys-gateway/).
+- Pasarela Redsys (WooCommerce.com): [Redsys Gateway](https://woocommerce.com/products/redsys-gateway/).  
+- Contexto comparativo de pasarelas en España (referencia general, no sustituye al banco): [Raiola Networks — alternativas PayPal](https://raiolanetworks.com/blog/alternativas-paypal-ecommerce/).
 
 ---
 
-*Última actualización: documento generado a partir de los requisitos acordados en la conversación de producto.*
+*Última actualización: pasarela fijada a **Redsys**; resto según requisitos acordados.*
