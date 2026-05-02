@@ -48,4 +48,19 @@ docker compose down
 
 ## Si falla la descarga de imágenes (TLS / certificado)
 
-Si ves errores del tipo `certificate is not valid` al hacer `pull`, suele deberse a inspección HTTPS (empresa, antivirus, VPN). Revisa certificados en Docker Desktop, proxy corporativo o prueba otra red; el `docker-compose.yml` no necesita cambios.
+Si al hacer `docker compose up` aparece algo como `tls: failed to verify certificate` hacia `*.r2.cloudflarestorage.com` (CDN de capas de Docker Hub), el cliente HTTPS ve un certificado que **no coincide con el nombre del servidor** o no confía en la CA (muy habitual con **proxy o inspección SSL corporativa**).
+
+**Qué puedes hacer (elige según tu entorno):**
+
+1. **Primera descarga en red “limpia”** (datos móviles, casa, otra WiFi sin proxy): ejecuta una vez `docker compose up -d`; las imágenes quedan en caché y luego suele funcionar también en la oficina.
+2. **IT / certificado corporativo**: instala la **CA raíz** de la empresa en el entorno que usa Docker Desktop (con backend **WSL 2**, a veces hace falta copiar el `.crt` a la distro Linux y ejecutar `sudo update-ca-certificates`, o seguir la guía de tu organización para Docker).
+3. **Exclusión en el proxy/firewall** para dominios de registro e imágenes de Docker Hub (pídeselo a sistemas si no puedes cambiarlo tú).
+
+Más contexto en el [foro de Docker sobre errores x509 al hacer pull](https://forums.docker.com/t/tls-failed-to-verify-certificate-x509-docker-hub/137486).
+
+Cuando `docker pull wordpress:6.7-php8.2-apache` y `docker pull mariadb:11.4` funcionen sin error, en la carpeta del proyecto:
+
+```powershell
+cd "c:\Users\fber\OneDrive - Dempo Digital Solutions S.L\Documentos\Projects\viaje-fin-de-curso"
+docker compose up -d
+```
