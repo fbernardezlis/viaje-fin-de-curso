@@ -25,7 +25,7 @@ services:
       start_period: 15s
 
   wordpress:
-    image: mirror.gcr.io/library/wordpress:6.7-php8.2-apache
+    image: mirror.gcr.io/library/wordpress:6.9.4-php8.2-apache
     container_name: vfc-wordpress
     restart: unless-stopped
     depends_on:
@@ -41,8 +41,12 @@ services:
       WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX:-wp_}
       WORDPRESS_DEBUG: ${WORDPRESS_DEBUG:-0}
     volumes:
+      # Núcleo WP en volumen nombrado (no anónimo): al subir versión de la imagen, borra este
+      # volumen una vez si el núcleo quedó en una versión antigua: docker volume rm viaje-fin-de-curso_wp_core
+      - wp_core:/var/www/html
       - ./wp-content:/var/www/html/wp-content
       - ./docker/php/zz-performance.ini:/usr/local/etc/php/conf.d/zz-performance.ini:ro
 
 volumes:
   db_data:
+  wp_core:

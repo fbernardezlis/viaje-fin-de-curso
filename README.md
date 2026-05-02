@@ -30,12 +30,20 @@ Tienda WordPress con WooCommerce, pensada para ser ligera y fácil de extender c
 
 | Ruta | Descripción |
 |------|-------------|
-| `docker-compose.yml` | WordPress (Apache + PHP 8.2) y MariaDB 11.4 (imágenes desde `mirror.gcr.io`, equivalentes a las de Docker Hub) |
+| `docker-compose.yml` | WordPress **6.9.4** (Apache + PHP 8.2) y MariaDB 11.4 (imágenes desde `mirror.gcr.io`, equivalentes a las de Docker Hub) |
 | `docker/php/zz-performance.ini` | OPcache y límites razonables para desarrollo/tienda |
 | `wp-content/plugins/` | Plugins personalizados del proyecto |
 | `wp-content/themes/` | Temas hijos o personalizados |
 
-El núcleo de WordPress va en la imagen; en el disco solo persistes **base de datos** (volumen Docker) y **`wp-content`** (carpeta del repo).
+El **núcleo** de WordPress va en el volumen Docker **`wp_core`** (la imagen solo aporta la versión al crear o vaciar ese volumen). **`wp-content`** sigue en la carpeta del repo. La **base de datos** está en el volumen **`db_data`**.
+
+**Subir solo la versión de WordPress** (cambiar el tag de la imagen en `docker-compose.yml`): para que el contenedor use el núcleo nuevo, borra el volumen del núcleo y vuelve a levantar (no borra la BD ni `wp-content`):
+
+```powershell
+docker compose down
+docker volume rm viaje-fin-de-curso_wp_core
+docker compose up -d
+```
 
 ## Comandos útiles
 
@@ -63,7 +71,7 @@ Más contexto en el [foro de Docker sobre errores x509 al hacer pull](https://fo
 Para probar solo las descargas (mismas imágenes que usa el compose):
 
 ```powershell
-docker pull mirror.gcr.io/library/wordpress:6.7-php8.2-apache
+docker pull mirror.gcr.io/library/wordpress:6.9.4-php8.2-apache
 docker pull mirror.gcr.io/library/mariadb:11.4
 ```
 
