@@ -3,9 +3,21 @@ declare(strict_types=1);
 
 namespace VFC\Core;
 
+use VFC\Core\Admin\Pages\AlumnosListPage;
+use VFC\Core\Admin\Pages\AuditPage;
+use VFC\Core\Admin\Pages\CentroProductosPage;
 use VFC\Core\Admin\Pages\CentrosListPage;
+use VFC\Core\Admin\Pages\EdicionesListPage;
+use VFC\Core\Admin\Pages\LiquidacionesListPage;
+use VFC\Core\Admin\Pages\MatriculasListPage;
+use VFC\Core\Admin\Pages\TutoresListPage;
 use VFC\Core\Database\Migrations;
+use VFC\Core\Rest\AuditController;
 use VFC\Core\Rest\CentrosController;
+use VFC\Core\Rest\EdicionesController;
+use VFC\Core\Rest\MatriculasController;
+use VFC\Core\Services\QrEmailService;
+use VFC\Core\Services\UsersService;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -33,12 +45,25 @@ final class Plugin
 
         Migrations::maybeUpgrade();
 
+        UsersService::registerHooks();
+        QrEmailService::registerHooks();
+
         if (is_admin()) {
             (new CentrosListPage())->register();
+            (new EdicionesListPage())->register();
+            (new AlumnosListPage())->register();
+            (new TutoresListPage())->register();
+            (new MatriculasListPage())->register();
+            (new CentroProductosPage())->register();
+            (new AuditPage())->register();
+            (new LiquidacionesListPage())->register();
         }
 
         add_action('rest_api_init', static function (): void {
             (new CentrosController())->register();
+            (new EdicionesController())->register();
+            (new MatriculasController())->register();
+            (new AuditController())->register();
         });
     }
 

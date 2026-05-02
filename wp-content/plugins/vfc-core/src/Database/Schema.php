@@ -138,6 +138,7 @@ final class Schema
             fecha_liberacion DATETIME NULL,
             fecha_confirmacion DATETIME NULL,
             motivo VARCHAR(255) NULL,
+            liquidacion_item_id BIGINT UNSIGNED NULL,
             created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY  (id),
@@ -145,7 +146,8 @@ final class Schema
             KEY idx_edicion (edicion_id),
             KEY idx_order (order_id),
             KEY idx_estado (estado),
-            KEY idx_liberacion (fecha_liberacion)
+            KEY idx_liberacion (fecha_liberacion),
+            KEY idx_liquidacion_item (liquidacion_item_id)
         ) {$charset};";
 
         $sql[] = "CREATE TABLE {$p}vfc_liquidaciones (

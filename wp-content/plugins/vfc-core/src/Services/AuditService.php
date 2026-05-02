@@ -45,6 +45,110 @@ final class AuditService
     }
 
     /**
+     * Lista entradas de auditoría con filtros opcionales.
+     *
+     * @param array{centro_id?: int, accion?: string, entidad?: string, from?: string, to?: string, per_page?: int, page?: int} $args
+     * @return array{items: array<int, array<string, mixed>>, total: int}
+     */
+    public static function list(array $args = []): array
+    {
+        global $wpdb;
+        $table = Schema::table(Schema::TABLE_AUDIT_LOG);
+
+        $perPage = max(1, (int) ($args['per_page'] ?? 50));
+        $page = max(1, (int) ($args['page'] ?? 1));
+        $offset = ($page - 1) * $perPage;
+
+        [$whereSql, $params] = self::buildWhere($args);
+
+        $totalSql = "SELECT COUNT(*) FROM {$table} WHERE {$whereSql}";
+        $total = (int) ($params === []
+            ? $wpdb->get_var($totalSql)
+            : $wpdb->get_var($wpdb->prepare($totalSql, $params)));
+
+        $listSql = "SELECT * FROM {$table} WHERE {$whereSql} ORDER BY id DESC LIMIT %d OFFSET %d";
+        $listParams = array_merge($params, [$perPage, $offset]);
+        $rows = $wpdb->get_results($wpdb->prepare($listSql, $listParams), ARRAY_A);
+
+        return ['items' => array_map('self::ensureArray', (array) $rows), 'total' => $total];
+    }
+
+    /**
+     * Itera todas las filas que cumplen los filtros (sin paginación) en lotes.
+     *
+     * @param array{centro_id?: int, accion?: string, entidad?: string, from?: string, to?: string} $args
+     * @return iterable<int, array<string, mixed>>
+     */
+    public static function iterate(array $args = []): iterable
+    {
+        global $wpdb;
+        $table = Schema::table(Schema::TABLE_AUDIT_LOG);
+        [$whereSql, $params] = self::buildWhere($args);
+
+        $batch = 500;
+        $offset = 0;
+        while (true) {
+            $sql = "SELECT * FROM {$table} WHERE {$whereSql} ORDER BY id ASC LIMIT %d OFFSET %d";
+            $rows = $wpdb->get_results(
+                $wpdb->prepare($sql, array_merge($params, [$batch, $offset])),
+                ARRAY_A
+            );
+            if (!$rows) {
+                break;
+            }
+            foreach ($rows as $row) {
+                yield $row;
+            }
+            $offset += $batch;
+            if (count($rows) < $batch) {
+                break;
+            }
+        }
+    }
+
+    /**
+     * @param array{centro_id?: int, accion?: string, entidad?: string, from?: string, to?: string} $args
+     * @return array{0: string, 1: array<int, mixed>}
+     */
+    private static function buildWhere(array $args): array
+    {
+        $where = ['1=1'];
+        $params = [];
+
+        if (!empty($args['centro_id'])) {
+            $where[] = 'centro_id = %d';
+            $params[] = (int) $args['centro_id'];
+        }
+        if (!empty($args['accion'])) {
+            $where[] = 'accion = %s';
+            $params[] = (string) $args['accion'];
+        }
+        if (!empty($args['entidad'])) {
+            $where[] = 'entidad_tipo = %s';
+            $params[] = (string) $args['entidad'];
+        }
+        if (!empty($args['from'])) {
+            $where[] = 'fecha >= %s';
+            $params[] = (string) $args['from'];
+        }
+        if (!empty($args['to'])) {
+            $where[] = 'fecha <= %s';
+            $params[] = (string) $args['to'];
+        }
+
+        return [implode(' AND ', $where), $params];
+    }
+
+    /**
+     * @param mixed $row
+     * @return array<string, mixed>
+     */
+    private static function ensureArray($row): array
+    {
+        return is_array($row) ? $row : [];
+    }
+
+    /**
      * @param array<string, mixed> $datos
      */
     private static function encodeDatos(array $datos): ?string
