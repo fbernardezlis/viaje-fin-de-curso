@@ -13,6 +13,21 @@ wp-content/themes/index.php
 wp-content/themes/twentytwentythree/
 wp-content/themes/twentytwentyfour/
 wp-content/themes/twentytwentyfive/
+# Build / dependencias
+**/vendor/
+**/node_modules/
+**/build/
+**/dist/
+*.cache
 *.log
+
+# OS
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# IDE
+.idea/
+.vscode/
+*.code-workspace
+
