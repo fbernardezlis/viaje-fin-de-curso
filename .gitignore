@@ -3,6 +3,15 @@ wp-content/uploads/
 wp-content/upgrade/
 wp-content/cache/
 wp-content/debug.log
+wp-content/languages/
+wp-content/index.php
+wp-content/plugins/akismet/
+wp-content/plugins/hello.php
+wp-content/plugins/index.php
+wp-content/themes/index.php
+wp-content/themes/twentytwentythree/
+wp-content/themes/twentytwentyfour/
+wp-content/themes/twentytwentyfive/
 *.log
 .DS_Store
 Thumbs.db
