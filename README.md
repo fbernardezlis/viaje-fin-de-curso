@@ -45,6 +45,21 @@ docker volume rm viaje-fin-de-curso_wp_core
 docker compose up -d
 ```
 
+## Portal VFC (`/portal/login`, etc.)
+
+Las rutas del plugin **vfc-portal** dependen de **permalinks no planos** y de que **Apache aplique `mod_rewrite`** sobre `index.php`. Si **http://localhost:8080/portal/login** devuelve **404** (página de Apache, no WordPress):
+
+1. Asegúrate de que en *Ajustes → Enlaces permanentes* no esté seleccionado “Simple” (o ejecuta una vez el script de abajo).
+2. Dentro del contenedor, regenera permalink + reglas en `.htaccess`:
+
+   ```powershell
+   docker cp docker/scripts/flush-rewrites.php vfc-wordpress:/tmp/flush-rewrites.php
+   docker exec vfc-wordpress php /tmp/flush-rewrites.php
+   docker exec vfc-wordpress rm -f /tmp/flush-rewrites.php
+   ```
+
+   WordPress redirige `/portal/login` → `/portal/login/` (301); lo normal es **200** en la URL con barra final.
+
 ## Comandos útiles
 
 ```powershell
