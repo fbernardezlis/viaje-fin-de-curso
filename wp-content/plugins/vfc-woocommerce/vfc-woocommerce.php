@@ -33,6 +33,9 @@ add_action('before_woocommerce_init', static function (): void {
     }
 });
 
+register_activation_hook(__FILE__, [\VFC\Woo\Activator::class, 'activate']);
+register_deactivation_hook(__FILE__, [\VFC\Woo\Deactivator::class, 'deactivate']);
+
 add_action('plugins_loaded', static function (): void {
     \VFC\Woo\Plugin::instance()->boot();
 });

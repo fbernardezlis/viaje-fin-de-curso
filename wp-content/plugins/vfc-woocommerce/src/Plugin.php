@@ -3,13 +3,22 @@ declare(strict_types=1);
 
 namespace VFC\Woo;
 
+use VFC\Woo\Admin\SettingsPage;
+use VFC\Woo\Frontend\BeneficiarioBanner;
+use VFC\Woo\Frontend\CatalogFilter;
+use VFC\Woo\Frontend\CheckoutNotice;
+use VFC\Woo\Rest\QrEndpoint;
+use VFC\Woo\Services\CronService;
+use VFC\Woo\WooHooks\OrderHooks;
+use VFC\Woo\WooHooks\ProductMetaPanel;
+
 if (!defined('ABSPATH')) {
     exit;
 }
 
 /**
- * Bootstrap del plugin VFC WooCommerce. En Fase 0 solo expone el contenedor
- * y la verificación de dependencias; los servicios reales se añaden en Fase 2.
+ * Bootstrap del plugin VFC WooCommerce. Solo arranca los modulos
+ * cuando WooCommerce y vfc-core estan presentes.
  */
 final class Plugin
 {
@@ -31,7 +40,22 @@ final class Plugin
 
         load_plugin_textdomain('vfc-woocommerce', false, dirname(plugin_basename(VFC_WOO_FILE)) . '/languages');
 
-        add_action('admin_notices', [$this, 'maybeShowDependencyNotice']);
+        if (!$this->dependenciesReady()) {
+            add_action('admin_notices', [$this, 'maybeShowDependencyNotice']);
+            return;
+        }
+
+        (new QrEndpoint())->register();
+        (new CatalogFilter())->register();
+        (new BeneficiarioBanner())->register();
+        (new CheckoutNotice())->register();
+        (new OrderHooks())->register();
+        (new ProductMetaPanel())->register();
+        (new CronService())->register();
+
+        if (is_admin()) {
+            (new SettingsPage())->register();
+        }
     }
 
     public function maybeShowDependencyNotice(): void
@@ -39,13 +63,7 @@ final class Plugin
         if (!current_user_can('activate_plugins')) {
             return;
         }
-        $missing = [];
-        if (!class_exists('WooCommerce')) {
-            $missing[] = 'WooCommerce';
-        }
-        if (!class_exists(\VFC\Core\Plugin::class)) {
-            $missing[] = 'VFC Core';
-        }
+        $missing = $this->missingDependencies();
         if ($missing === []) {
             return;
         }
@@ -54,6 +72,26 @@ final class Plugin
             esc_html__('Faltan dependencias activas:', 'vfc-woocommerce'),
             esc_html(implode(', ', $missing))
         );
+    }
+
+    private function dependenciesReady(): bool
+    {
+        return $this->missingDependencies() === [];
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function missingDependencies(): array
+    {
+        $missing = [];
+        if (!class_exists('WooCommerce')) {
+            $missing[] = 'WooCommerce';
+        }
+        if (!class_exists(\VFC\Core\Plugin::class)) {
+            $missing[] = 'VFC Core';
+        }
+        return $missing;
     }
 
     private function __construct()
