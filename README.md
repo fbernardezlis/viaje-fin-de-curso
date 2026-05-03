@@ -58,7 +58,17 @@ Las rutas del plugin **vfc-portal** dependen de **permalinks no planos** y de qu
    docker exec vfc-wordpress rm -f /tmp/flush-rewrites.php
    ```
 
-   WordPress redirige `/portal/login` → `/portal/login/` (301); lo normal es **200** en la URL con barra final.
+   WordPress redige `/portal/login` → `/portal/login/` (301); lo normal es **200** en la URL con barra final.
+
+Para **fijar una contraseña de prueba** a un alumno (`vfc_alumno`) en local (último alumno creado, p. ej. tras un smoke test):
+
+```powershell
+docker cp docker/scripts/reset-alumno-dev-password.php vfc-wordpress:/tmp/reset-alumno-dev-password.php
+docker exec vfc-wordpress php /tmp/reset-alumno-dev-password.php "TuClaveSegura"
+docker exec vfc-wordpress rm -f /tmp/reset-alumno-dev-password.php
+```
+
+Tercer argumento opcional: `login` o `email` concreto.
 
 ## Comandos útiles
 
