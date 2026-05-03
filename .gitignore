@@ -15,6 +15,10 @@ wp-content/themes/twentytwentyfour/
 wp-content/themes/twentytwentyfive/
 # Build / dependencias
 **/vendor/
+# Excepcion: el vendor del plugin vfc-portal (Endroid + deps) se commitea
+# para no requerir Composer en produccion.
+!wp-content/plugins/vfc-portal/vendor/
+!wp-content/plugins/vfc-portal/vendor/**
 **/node_modules/
 **/build/
 **/dist/
