@@ -26,6 +26,22 @@ Tienda WordPress con WooCommerce, pensada para ser ligera y fácil de extender c
 
 5. **WooCommerce**: en el escritorio, *Plugins → Añadir nuevo*, busca *WooCommerce* e instálalo (así solo cargas la tienda cuando la necesites).
 
+### Mensaje «¡Disculpa este desastre!…» (pantalla magenta)
+
+Eso es el **modo próximamente / visibilidad del sitio** de **WooCommerce**, no un fallo del proyecto.
+
+**En wp-admin:** *WooCommerce → Ajustes → pestaña «Visibilidad del sitio»* (o *Site visibility*) → elige **En vivo** / **Live** (no «Próximamente» / *Coming soon*) y guarda.
+
+**Por CLI dentro del contenedor** (útil si no puedes entrar al menú):
+
+```powershell
+docker cp docker/scripts/disable-wc-coming-soon.php vfc-wordpress:/tmp/disable-wc-coming-soon.php
+docker exec vfc-wordpress php /tmp/disable-wc-coming-soon.php
+docker exec vfc-wordpress rm -f /tmp/disable-wc-coming-soon.php
+```
+
+Luego recarga la web con **Ctrl+F5**. Si el hosting tiene caché, purgala.
+
 ## Estructura
 
 | Ruta | Descripción |
