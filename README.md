@@ -70,6 +70,29 @@ docker exec vfc-wordpress rm -f /tmp/reset-alumno-dev-password.php
 
 Tercer argumento opcional: `login` o `email` concreto.
 
+## Si falla la portada (`http://localhost:8080/`)
+
+Desde el contenedor la portada suele responder **HTTP 200** con el tema activo (`vfc-portal` hijo de Twenty Twenty-Five). Si en el navegador ves error, corta de carga o “no es posible conectar”:
+
+1. **URL y protocolo**: usa **`http://localhost:8080`** (no `https://` en local salvo que hayas configurado TLS; el certificado suele fallar y el navegador muestra error de seguridad).
+2. **Docker**: `docker compose ps` — el servicio `wordpress` debe estar *Up*. Si no, `docker compose up -d`.
+3. **Puerto**: en `.env`, `WP_PORT` define el mapeo (`8080` por defecto). La URL debe coincidir con `Ajustes → Generales` (`Dirección de WordPress` y `Dirección del sitio`); si cambiaste el puerto, actualiza también esas URLs en wp-admin.
+4. **Comprobación rápida desde PowerShell** (debe verse `HTTP/1.1 200` o `HTTP/1.0 200`):
+
+   ```powershell
+   curl.exe -I --max-time 10 http://localhost:8080/
+   ```
+
+5. **Diagnóstico dentro de WordPress** (opciones de URL, tema activo, portada):
+
+   ```powershell
+   docker cp docker/scripts/diag-home.php vfc-wordpress:/tmp/diag-home.php
+   docker exec vfc-wordpress php /tmp/diag-home.php
+   docker exec vfc-wordpress rm -f /tmp/diag-home.php
+   ```
+
+6. **Errores PHP**: si aparece “Ha habido un error crítico en esta web”, activa temporalmente `WORDPRESS_DEBUG=1` en `.env`, reinicia el contenedor y revisa `wp-content/debug.log` (si existe).
+
 ## Comandos útiles
 
 ```powershell
