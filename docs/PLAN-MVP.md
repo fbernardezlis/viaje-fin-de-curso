@@ -95,18 +95,19 @@ Documento vivo para alinear **pasarelas**, **alcance**, **arquitectura** y **fas
 - Cálculo **% sin IVA**; persistencia en pedido; **Completado** + **15 días** + **reembolsos**.  
 - Pruebas con **Redsys en modo pruebas** (tarjeta de test del banco / documentación del plugin); ampliar a **Bizum** solo si el contrato y el plugin lo soportan en sandbox.
 
-### Fase 3 — Portal front
+### Fase 3 — Portal front (**cerrada**)
 
-- Flujos **admin colegio** (ediciones, matrículas, productos del colegio, lectura liquidaciones/auditoría export).  
-- Flujos **alumno** (perfil, alias, saldo, historial, QR, invitaciones).  
-- Flujos **tutor** (selector de hijos, mismas capacidades operativas necesarias).  
-- i18n: cadenas en `__()` / `.pot`; preparación **ES → CA → EN**.
+Implementación y documentación: [PLAN-FASE3.md](PLAN-FASE3.md).
 
-### Fase 4 — Endurecimiento pre‑producción
+- Rutas `/portal/*`, auth, paneles alumno / tutor / colegio, QR inmutable + URL en portal, REST `vfc/v1/portal/*`, historial con filtros en UI.  
+- i18n **solo ES** en código; CA/EN previstos en Fase 4.
 
-- Pruebas de carga ligera; revisión de permisos; **logs** y trazabilidad.  
-- Revisión **RGPD** (textos legales, cookies, retención, export/borrado si aplica).  
-- Plan de **despliegue** y checklist go‑live.
+### Fase 4 — Endurecimiento pre‑producción (**en curso / planificación**)
+
+Detalle y checklist: [PLAN-FASE4.md](PLAN-FASE4.md).
+
+- **Redsys** (sandbox → producción), **RGPD** / cookies, **i18n** (Polylang u opción de pago), mejoras opcionales de portal (perfil, PDF QRs).  
+- Pruebas de carga ligera, permisos, logs, **despliegue** (AWS u otro) y go-live.
 
 ---
 
@@ -124,10 +125,10 @@ Documento vivo para alinear **pasarelas**, **alcance**, **arquitectura** y **fas
 
 ## 6. Próximos pasos inmediatos
 
-1. **Contratar y configurar TPV Redsys** con la entidad bancaria; obtener **credenciales de test**; adquirir/configurar el **plugin Redsys** compatible con vuestra versión de WooCommerce y **HPOS** si lo usáis.  
-2. **Decidir** modelo de datos (**tablas propias** vs **CPT**) para Centro/Edición/Matrícula (impacto en informes y CSV).  
-3. **Crear repositorio de issues** (o tablero) a partir de las **fases 1–4** desglosadas en tareas de 1–2 días.  
-4. **Prototipo UI** del portal (wireframes) antes de implementar pantallas completas.
+1. **Fase 4**: seguir [PLAN-FASE4.md](PLAN-FASE4.md) — empezar por **Redsys en sandbox** y **textos RGPD** en staging.  
+2. **Contratar y configurar TPV Redsys** con la entidad bancaria; credenciales de test; plugin compatible con WooCommerce y **HPOS**.  
+3. **Despliegue**: elegir entorno (p. ej. Lightsail/EC2/ECS), dominio HTTPS, correo (SES/SMTP), backups BD.  
+4. **Tablero de issues** a partir de Fase 4 desglosada en tareas de 1–2 días.
 
 ---
 
@@ -138,4 +139,4 @@ Documento vivo para alinear **pasarelas**, **alcance**, **arquitectura** y **fas
 
 ---
 
-*Última actualización: pasarela fijada a **Redsys**; resto según requisitos acordados.*
+*Última actualización: mayo 2026 — Fase 3 portal cerrada; Fase 4 detallada en PLAN-FASE4.md.*

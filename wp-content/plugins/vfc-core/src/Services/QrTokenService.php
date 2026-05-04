@@ -9,8 +9,8 @@ if (!defined('ABSPATH')) {
 
 /**
  * Generación, hash y validación de tokens QR (alumno + edición).
- * En BD se guarda solo el SHA-256 (`tokenHash`); el valor en claro solo se devuelve al
- * crear la matrícula y al solicitar reenvío (en cuyo caso se rota el token).
+ * El token en claro se persiste en `vfc_matriculas.qr_token` al crear la matrícula y no cambia
+ * (salvo filas legacy sin columna, que reciben un token la primera vez que se consulta).
  */
 final class QrTokenService
 {

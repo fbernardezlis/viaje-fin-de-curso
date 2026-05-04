@@ -12,6 +12,10 @@ use VFC\Core\Admin\Pages\LiquidacionesListPage;
 use VFC\Core\Admin\Pages\MatriculasListPage;
 use VFC\Core\Admin\Pages\TutoresListPage;
 use VFC\Core\Database\Migrations;
+use VFC\Core\Privacy\ConsentRestController;
+use VFC\Core\Privacy\CookieBanner;
+use VFC\Core\Privacy\LegalPages;
+use VFC\Core\Privacy\PrivacyGuide;
 use VFC\Core\Rest\AuditController;
 use VFC\Core\Rest\CentrosController;
 use VFC\Core\Rest\EdicionesController;
@@ -44,9 +48,12 @@ final class Plugin
         load_plugin_textdomain('vfc-core', false, dirname(plugin_basename(VFC_CORE_FILE)) . '/languages');
 
         Migrations::maybeUpgrade();
+        LegalPages::installOnce();
 
         UsersService::registerHooks();
         QrEmailService::registerHooks();
+        PrivacyGuide::register();
+        (new CookieBanner())->register();
 
         if (is_admin()) {
             (new CentrosListPage())->register();
@@ -64,6 +71,7 @@ final class Plugin
             (new EdicionesController())->register();
             (new MatriculasController())->register();
             (new AuditController())->register();
+            (new ConsentRestController())->register();
         });
     }
 

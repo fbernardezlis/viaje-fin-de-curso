@@ -104,6 +104,7 @@ final class Schema
             alumno_user_id BIGINT UNSIGNED NOT NULL,
             alias VARCHAR(120) NOT NULL,
             qr_token_hash CHAR(64) NOT NULL,
+            qr_token VARCHAR(96) NOT NULL DEFAULT '',
             creado_por BIGINT UNSIGNED NULL,
             created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

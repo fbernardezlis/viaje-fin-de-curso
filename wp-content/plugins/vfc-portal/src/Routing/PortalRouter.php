@@ -132,7 +132,7 @@ final class PortalRouter
 
     public function enqueueAssets(): void
     {
-        $view = (string) get_query_var(self::QV_VIEW);
+        $view = $this->detectPortalViewForAssets();
         if ($view === '') {
             return;
         }
@@ -180,5 +180,53 @@ final class PortalRouter
                 true
             );
         }
+    }
+
+    /**
+     * Resuelve la vista del portal para encolar CSS/JS durante wp_head().
+     * En algunos entornos get_query_var puede llegar vacío en wp_enqueue_scripts;
+     * se usa la ruta de la petición como respaldo (incl. instalación en subdirectorio).
+     */
+    private function detectPortalViewForAssets(): string
+    {
+        $fromQuery = (string) get_query_var(self::QV_VIEW);
+        if ($fromQuery !== '') {
+            return $fromQuery;
+        }
+
+        $path = (string) wp_parse_url((string) ($_SERVER['REQUEST_URI'] ?? ''), PHP_URL_PATH);
+        if ($path === '') {
+            return '';
+        }
+
+        $homePath = wp_parse_url(home_url(), PHP_URL_PATH);
+        if (is_string($homePath) && $homePath !== '' && $homePath !== '/') {
+            $homePath = untrailingslashit($homePath);
+            if ($homePath !== '' && str_starts_with($path, $homePath)) {
+                $path = substr($path, strlen($homePath));
+                if ($path === '' || !str_starts_with($path, '/')) {
+                    $path = '/' . ltrim($path, '/');
+                }
+            }
+        }
+
+        $norm = untrailingslashit($path);
+        if (preg_match('#^/portal/qr-image/\d+\.png$#', $norm) === 1) {
+            return self::VIEW_QR_IMAGE;
+        }
+        if (preg_match('#^/portal/qr/[^/]+$#', $norm) === 1) {
+            return self::VIEW_PUBLIC_QR;
+        }
+        if (preg_match('#^/portal/(login|logout|reset|alumno|colegio)$#', $norm, $m) === 1) {
+            return $m[1];
+        }
+        if (preg_match('#^/portal/tutor(?:/\d+)?$#', $norm) === 1) {
+            return self::VIEW_TUTOR;
+        }
+        if ($norm === '/portal') {
+            return self::VIEW_LOGIN;
+        }
+
+        return '';
     }
 }

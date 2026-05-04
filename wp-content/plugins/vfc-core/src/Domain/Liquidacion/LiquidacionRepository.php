@@ -256,4 +256,83 @@ final class LiquidacionRepository
 
         return $saved;
     }
+
+    /**
+     * Elimina una liquidación: desvincula movimientos, borra ítems y cabecera.
+     * Debe llamarse solo tras comprobar permisos en la capa de administración.
+     *
+     * @throws \RuntimeException
+     */
+    public function delete(int $liquidacionId): void
+    {
+        global $wpdb;
+        if ($liquidacionId <= 0) {
+            throw new \RuntimeException(__('Identificador de liquidación no válido.', 'vfc-core'));
+        }
+
+        $existing = $this->find($liquidacionId);
+        if ($existing === null) {
+            throw new \RuntimeException(__('Liquidación no encontrada.', 'vfc-core'));
+        }
+
+        $movs = Schema::table(Schema::TABLE_MOVIMIENTOS_SALDO);
+        $items = Schema::table(Schema::TABLE_LIQUIDACION_ITEMS);
+        $liqs = Schema::table(Schema::TABLE_LIQUIDACIONES);
+
+        $itemIds = $wpdb->get_col($wpdb->prepare(
+            "SELECT id FROM {$items} WHERE liquidacion_id = %d",
+            $liquidacionId
+        ));
+        $itemIds = array_map('intval', (array) $itemIds);
+        $itemIds = array_values(array_filter($itemIds, static fn (int $i) => $i > 0));
+
+        $snapshot = [
+            'centro_id' => $existing->centroId,
+            'importe' => $existing->importe,
+            'fecha' => $existing->fecha,
+            'referencia' => $existing->referencia,
+            'n_items' => count($itemIds),
+        ];
+
+        $wpdb->query('START TRANSACTION');
+
+        try {
+            $now = current_time('mysql', true);
+
+            if ($itemIds !== []) {
+                $placeholders = implode(',', array_fill(0, count($itemIds), '%d'));
+                $sql = "UPDATE {$movs} SET liquidacion_item_id = NULL, updated_at = %s
+                        WHERE liquidacion_item_id IN ({$placeholders})";
+                $params = array_merge([$now], $itemIds);
+                $prep = $wpdb->prepare($sql, ...$params);
+                if (!is_string($prep) || $prep === '') {
+                    throw new \RuntimeException(__('No se pudo preparar la desvinculación de movimientos.', 'vfc-core'));
+                }
+                $upd = $wpdb->query($prep);
+                if ($upd === false) {
+                    throw new \RuntimeException(__('No se pudieron desvincular los movimientos de saldo.', 'vfc-core'));
+                }
+            }
+
+            $delItems = $wpdb->delete($items, ['liquidacion_id' => $liquidacionId], ['%d']);
+            if ($delItems === false) {
+                throw new \RuntimeException(__('No se pudieron eliminar los ítems de liquidación.', 'vfc-core'));
+            }
+
+            $delHead = $wpdb->delete($liqs, ['id' => $liquidacionId], ['%d']);
+            if ($delHead === false || $delHead === 0) {
+                throw new \RuntimeException(__('No se pudo eliminar la cabecera de liquidación.', 'vfc-core'));
+            }
+
+            $wpdb->query('COMMIT');
+        } catch (\Throwable $e) {
+            $wpdb->query('ROLLBACK');
+            if ($e instanceof \RuntimeException) {
+                throw $e;
+            }
+            throw new \RuntimeException($e->getMessage(), 0, $e);
+        }
+
+        AuditService::log('delete', self::ENTIDAD, $liquidacionId, $snapshot, $existing->centroId);
+    }
 }

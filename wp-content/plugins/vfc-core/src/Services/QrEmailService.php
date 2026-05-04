@@ -14,8 +14,7 @@ if (!defined('ABSPATH')) {
 
 /**
  * Envía el email con el enlace QR del alumno para una edición.
- * Cuando hay reenvío rota el token; el destinatario es siempre el email del alumno
- * (a quien se envía además invitaciones a otros emails se gestionará desde el portal).
+ * El enlace es el mismo token inmutable de la matrícula; el reenvío solo repite el correo.
  */
 final class QrEmailService
 {
@@ -49,15 +48,15 @@ final class QrEmailService
         $svc = new self();
         $matriculas = $svc->matriculas->listByAlumno($alumnoUserId);
         foreach ($matriculas as $m) {
-            $svc->sendForMatricula((int) $m->id, true);
+            $svc->sendForMatricula((int) $m->id);
         }
         update_user_meta($alumnoUserId, UsersService::META_QR_DELIVERED, current_time('mysql', true));
     }
 
     /**
-     * Envía (o reenvía) el QR de una matrícula. Si es reenvío rota el token.
+     * Envía (o reenvía) el email con el enlace QR de una matrícula (mismo token inmutable).
      */
-    public function sendForMatricula(int $matriculaId, bool $rotateToken): bool
+    public function sendForMatricula(int $matriculaId): bool
     {
         $matricula = $this->matriculas->find($matriculaId);
         if ($matricula === null) {
@@ -76,12 +75,7 @@ final class QrEmailService
         }
         $centro = $this->centros->find($edicion->centroId);
 
-        $token = $rotateToken
-            ? $this->matriculas->rotateToken($matriculaId)
-            : ''; // sin rotar no tenemos el token en claro: la primera entrega siempre rota.
-        if ($token === '') {
-            $token = $this->matriculas->rotateToken($matriculaId);
-        }
+        $token = $this->matriculas->getPlainQrToken($matriculaId);
         $url = $this->qr->urlForToken($token);
 
         $blogName = wp_specialchars_decode((string) get_option('blogname'), ENT_QUOTES);
@@ -94,7 +88,7 @@ final class QrEmailService
 
         $body = sprintf(
             /* translators: 1: alumno name, 2: edicion name, 3: centro name, 4: QR URL, 5: blog name */
-            __("Hola %1\$s,\n\nTe han matriculado en la edición “%2\$s”%3\$s. Comparte este enlace o el QR generado a partir de él con quien quieras que pueda comprar a tu favor:\n\n%4\$s\n\nCualquier compra realizada después de abrir ese enlace quedará vinculada a tu cuenta hasta que la persona pulse “Salir / dejar de comprar”.\n\nSi este enlace queda obsoleto, pide un reenvío y se generará uno nuevo (el anterior dejará de funcionar).\n\n— %5\$s", 'vfc-core'),
+            __("Hola %1\$s,\n\nTe han matriculado en la edición “%2\$s”%3\$s. Este enlace es permanente para esta matrícula: compártelo o el código QR generado a partir de él con quien quieras que pueda comprar a tu favor:\n\n%4\$s\n\nCualquier compra realizada después de abrir ese enlace quedará vinculada a tu cuenta hasta que la persona pulse “Salir / dejar de comprar”.\n\nPuedes pedir un reenvío del correo desde el portal; el enlace seguirá siendo el mismo.\n\n— %5\$s", 'vfc-core'),
             $alumno->display_name ?: $alumno->user_login,
             $edicion->nombre,
             $centro !== null ? sprintf(' (%s)', $centro->nombre) : '',

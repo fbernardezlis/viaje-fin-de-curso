@@ -17,6 +17,8 @@ final class LiquidacionesListPage
     public const SLUG = 'vfc-liquidaciones';
     private const NONCE_FIELD = 'vfc_liquidacion_nonce';
     private const NONCE_ACTION_CREATE = 'vfc_liquidacion_create';
+    private const NONCE_DELETE_FIELD = 'vfc_liquidacion_delete_nonce';
+    private const NONCE_ACTION_DELETE = 'vfc_liquidacion_delete';
 
     private LiquidacionRepository $repo;
     private CentroRepository $centros;
@@ -80,6 +82,9 @@ final class LiquidacionesListPage
         if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->handleCreate();
         }
+        if ($action === 'delete' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->handleDelete();
+        }
     }
 
     private function handleCreate(): void
@@ -117,6 +122,29 @@ final class LiquidacionesListPage
         }
 
         $this->redirect(['action' => 'view', 'id' => (int) $liq->id, 'vfc_notice' => 'created']);
+    }
+
+    private function handleDelete(): void
+    {
+        if (!current_user_can(Capabilities::MANAGE_LIQUIDACIONES)) {
+            wp_die(esc_html__('Sin permisos.', 'vfc-core'));
+        }
+        check_admin_referer(self::NONCE_ACTION_DELETE, self::NONCE_DELETE_FIELD);
+
+        $id = isset($_POST['liquidacion_id']) ? (int) $_POST['liquidacion_id'] : 0;
+        try {
+            $this->repo->delete($id);
+        } catch (\RuntimeException $e) {
+            $this->redirect([
+                'action' => 'view',
+                'id' => $id,
+                'vfc_error' => 'delete',
+                'vfc_msg' => rawurlencode($e->getMessage()),
+            ]);
+            return;
+        }
+
+        $this->redirect(['vfc_notice' => 'deleted']);
     }
 
     private function renderList(): void
@@ -319,6 +347,27 @@ final class LiquidacionesListPage
             }
         }
         echo '</tbody></table>';
+
+        if (current_user_can(Capabilities::MANAGE_LIQUIDACIONES)) {
+            $deleteUrl = add_query_arg(['page' => self::SLUG], admin_url('admin.php'));
+            echo '<h2>' . esc_html__('Eliminar liquidación', 'vfc-core') . '</h2>';
+            echo '<p class="description">' . esc_html__(
+                'Al eliminar, se borra el registro de esta liquidación y los importes asociados vuelven a figurar como pendientes de liquidar para el centro (misma lógica que antes de crearla). Quedará constancia en el log de auditoría.',
+                'vfc-core'
+            ) . '</p>';
+            echo '<form method="post" action="' . esc_url($deleteUrl) . '" id="vfc-liquidacion-delete-form">';
+            wp_nonce_field(self::NONCE_ACTION_DELETE, self::NONCE_DELETE_FIELD);
+            echo '<input type="hidden" name="action" value="delete" />';
+            echo '<input type="hidden" name="page" value="' . esc_attr(self::SLUG) . '" />';
+            echo '<input type="hidden" name="liquidacion_id" value="' . (int) $id . '" />';
+            printf(
+                '<p><button type="submit" class="button button-link-delete" id="vfc-liquidacion-delete-btn" onclick="return window.confirm(%s);">%s</button></p>',
+                esc_attr(wp_json_encode(__('¿Eliminar esta liquidación de forma permanente?', 'vfc-core'))),
+                esc_html__('Eliminar liquidación', 'vfc-core')
+            );
+            echo '</form>';
+        }
+
         echo '</div>';
     }
 
@@ -336,6 +385,9 @@ final class LiquidacionesListPage
     {
         if (!empty($_GET['vfc_notice']) && (string) $_GET['vfc_notice'] === 'created') {
             echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Liquidación creada.', 'vfc-core') . '</p></div>';
+        }
+        if (!empty($_GET['vfc_notice']) && (string) $_GET['vfc_notice'] === 'deleted') {
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Liquidación eliminada. Los movimientos vuelven a estar pendientes de liquidar.', 'vfc-core') . '</p></div>';
         }
         if (!empty($_GET['vfc_error'])) {
             $msg = isset($_GET['vfc_msg'])

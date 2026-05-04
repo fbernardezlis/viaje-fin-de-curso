@@ -132,6 +132,13 @@ $resp = $restServer->dispatch($req);
 $d = $resp->get_data();
 $line('REST /movimientos status=' . $resp->get_status() . ' total=' . ($d['total'] ?? '?') . ' items=' . count($d['items'] ?? []));
 
+$req = new WP_REST_Request('GET', '/vfc/v1/portal/movimientos');
+$req->set_query_params(['alumno_id' => $alumnoId, 'per_page' => 10, 'estado' => 'BLOQUEADO']);
+$resp = $restServer->dispatch($req);
+$d = $resp->get_data();
+$bloqueados = (int) ($d['total'] ?? 0);
+$line('REST /movimientos?estado=BLOQUEADO total=' . $bloqueados . ' (esperado >= 1)');
+
 // 7. mis-alumnos como tutor
 wp_set_current_user($tutorId);
 $req = new WP_REST_Request('GET', '/vfc/v1/portal/mis-alumnos');

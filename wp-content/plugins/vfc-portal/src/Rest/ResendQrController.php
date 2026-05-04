@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * POST /vfc/v1/portal/qr/resend -> rota token y dispara email del QR.
+ * POST /vfc/v1/portal/qr/resend -> reenvía el correo con el mismo enlace QR.
  */
 final class ResendQrController
 {

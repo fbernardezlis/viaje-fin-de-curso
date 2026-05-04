@@ -10,18 +10,11 @@ add_action('after_setup_theme', static function (): void {
 });
 
 add_action('wp_enqueue_scripts', static function (): void {
-    $parent = 'twentytwentyfive-style';
-    wp_enqueue_style(
-        $parent,
-        get_template_directory_uri() . '/style.css',
-        [],
-        wp_get_theme(get_template())->get('Version')
-    );
-
+    // Kadence registra y encola `kadence-global` en el front; el hijo va después.
     wp_enqueue_style(
         'vfc-portal-style',
         get_stylesheet_directory_uri() . '/style.css',
-        [$parent],
+        ['kadence-global'],
         wp_get_theme()->get('Version')
     );
-});
+}, 20);

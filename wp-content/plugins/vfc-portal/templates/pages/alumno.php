@@ -5,11 +5,20 @@ if (!defined('ABSPATH')) {
 /**
  * @var array{id:int,display_name:string,email:string} $alumno
  * @var array<int, array<string, mixed>> $matriculas
+ * @var array<int, string> $ediciones_filtro id edición => nombre
  * @var array{bloqueado:float,confirmado:float,liquidado:float,neto:float} $saldo
  * @var array{items: array<int, array<string,mixed>>, total: int, page: int, per_page: int} $historial
+ * @var array<string, mixed> $historial_hf filtros activos (edicion_id, estado, tipo, from, to)
+ * @var array<string, int|string> $historial_hf_query params GET para paginación
  */
+$ediciones_filtro = $ediciones_filtro ?? [];
+$historial_hf = $historial_hf ?? [];
+$historial_hf_query = $historial_hf_query ?? [];
+$hasHistorialFilters = $historial_hf !== [];
 $pages = max(1, (int) ceil(($historial['total'] ?: 0) / max(1, $historial['per_page'])));
 $page = max(1, $historial['page']);
+$hfFrom = isset($historial_hf['from']) ? substr((string) $historial_hf['from'], 0, 10) : '';
+$hfTo = isset($historial_hf['to']) ? substr((string) $historial_hf['to'], 0, 10) : '';
 ?>
 <section class="vfc-portal-shell vfc-portal-dashboard">
     <header class="vfc-portal-page-header">
@@ -37,7 +46,10 @@ $page = max(1, $historial['page']);
 
     <h2><?php esc_html_e('Mis QR', 'vfc-portal'); ?></h2>
     <?php if ($matriculas === []): ?>
-        <p class="vfc-portal-muted"><?php esc_html_e('Aún no tienes ninguna matrícula activa.', 'vfc-portal'); ?></p>
+        <div class="vfc-portal-card vfc-portal-muted">
+            <p><?php esc_html_e('Aún no tienes ninguna matrícula en el sistema.', 'vfc-portal'); ?></p>
+            <p><?php esc_html_e('Sin matrícula no se puede generar tu QR personal: el colegio debe darte de alta en una edición desde el panel de administración de Viaje fin de curso (matrícula vinculada a tu usuario).', 'vfc-portal'); ?></p>
+        </div>
     <?php else: ?>
         <div class="vfc-portal-grid vfc-portal-grid-2">
             <?php foreach ($matriculas as $m): ?>
@@ -49,9 +61,19 @@ $page = max(1, $historial['page']);
                         </span>
                     </header>
                     <small class="vfc-portal-muted"><?php echo esc_html($m['centro']); ?></small>
-                    <button type="button" class="vfc-portal-btn vfc-portal-btn-primary" data-vfc-qr-show>
-                        <?php esc_html_e('Generar / mostrar QR', 'vfc-portal'); ?>
+                    <p class="vfc-portal-label vfc-portal-qr-url-heading"><?php esc_html_e('Enlace directo (permanente)', 'vfc-portal'); ?></p>
+                    <div class="vfc-portal-qr-urlbox">
+                        <input type="text" class="vfc-portal-qr-url-input" readonly value="<?php echo esc_attr((string) ($m['qr_link_url'] ?? '')); ?>" aria-label="<?php esc_attr_e('URL del enlace QR', 'vfc-portal'); ?>">
+                        <button type="button" class="vfc-portal-btn" data-vfc-qr-copy-url><?php esc_html_e('Copiar enlace', 'vfc-portal'); ?></button>
+                    </div>
+                    <button type="button" class="vfc-portal-btn vfc-portal-btn-primary vfc-portal-qr-show-btn" data-vfc-qr-show>
+                        <?php esc_html_e('Mostrar código QR', 'vfc-portal'); ?>
                     </button>
+                    <p class="vfc-portal-qr-fallback">
+                        <a class="vfc-portal-btn" href="<?php echo esc_url($m['qr_image_url']); ?>" target="_blank" rel="noopener noreferrer">
+                            <?php esc_html_e('Abrir imagen QR (nueva pestaña)', 'vfc-portal'); ?>
+                        </a>
+                    </p>
                     <div class="vfc-portal-qr-image" hidden>
                         <img alt="QR" data-vfc-qr-img-src="<?php echo esc_attr($m['qr_image_url']); ?>">
                     </div>
@@ -61,7 +83,7 @@ $page = max(1, $historial['page']);
                         </button>
                     </div>
                     <p class="vfc-portal-muted vfc-portal-qr-hint">
-                        <?php esc_html_e('Generar el QR rota el token anterior. Solo el último enlace activo es válido.', 'vfc-portal'); ?>
+                        <?php esc_html_e('Este enlace y el QR no cambian mientras exista la matrícula. Quien lo abra podrá comprar vinculado a ti hasta que pulse “Salir” en la tienda.', 'vfc-portal'); ?>
                     </p>
                 </div>
             <?php endforeach; ?>
@@ -69,8 +91,53 @@ $page = max(1, $historial['page']);
     <?php endif; ?>
 
     <h2><?php esc_html_e('Historial de movimientos', 'vfc-portal'); ?></h2>
-    <?php if ($historial['items'] === []): ?>
+    <form class="vfc-portal-filters" method="get" action="<?php echo esc_url(home_url('/portal/alumno/')); ?>">
+        <div class="vfc-portal-filters-grid">
+            <label class="vfc-portal-field">
+                <span class="vfc-portal-label"><?php esc_html_e('Edición', 'vfc-portal'); ?></span>
+                <select name="hf_edicion">
+                    <option value=""><?php esc_html_e('Todas', 'vfc-portal'); ?></option>
+                    <?php foreach ($ediciones_filtro as $eid => $enombre): ?>
+                        <option value="<?php echo (int) $eid; ?>"<?php selected((int) ($historial_hf['edicion_id'] ?? 0), (int) $eid); ?>><?php echo esc_html((string) $enombre); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </label>
+            <label class="vfc-portal-field">
+                <span class="vfc-portal-label"><?php esc_html_e('Estado', 'vfc-portal'); ?></span>
+                <select name="hf_estado">
+                    <option value=""><?php esc_html_e('Todos', 'vfc-portal'); ?></option>
+                    <option value="BLOQUEADO"<?php selected((string) ($historial_hf['estado'] ?? ''), 'BLOQUEADO'); ?>><?php echo esc_html('BLOQUEADO'); ?></option>
+                    <option value="CONFIRMADO"<?php selected((string) ($historial_hf['estado'] ?? ''), 'CONFIRMADO'); ?>><?php echo esc_html('CONFIRMADO'); ?></option>
+                    <option value="REVERTIDO"<?php selected((string) ($historial_hf['estado'] ?? ''), 'REVERTIDO'); ?>><?php echo esc_html('REVERTIDO'); ?></option>
+                </select>
+            </label>
+            <label class="vfc-portal-field">
+                <span class="vfc-portal-label"><?php esc_html_e('Tipo', 'vfc-portal'); ?></span>
+                <select name="hf_tipo">
+                    <option value=""><?php esc_html_e('Todos', 'vfc-portal'); ?></option>
+                    <option value="abono"<?php selected((string) ($historial_hf['tipo'] ?? ''), 'abono'); ?>><?php echo esc_html('abono'); ?></option>
+                    <option value="reverso"<?php selected((string) ($historial_hf['tipo'] ?? ''), 'reverso'); ?>><?php echo esc_html('reverso'); ?></option>
+                </select>
+            </label>
+            <label class="vfc-portal-field">
+                <span class="vfc-portal-label"><?php esc_html_e('Desde', 'vfc-portal'); ?></span>
+                <input type="date" name="hf_from" value="<?php echo esc_attr($hfFrom); ?>">
+            </label>
+            <label class="vfc-portal-field">
+                <span class="vfc-portal-label"><?php esc_html_e('Hasta', 'vfc-portal'); ?></span>
+                <input type="date" name="hf_to" value="<?php echo esc_attr($hfTo); ?>">
+            </label>
+        </div>
+        <div class="vfc-portal-filters-actions">
+            <button type="submit" class="vfc-portal-btn vfc-portal-btn-primary"><?php esc_html_e('Aplicar filtros', 'vfc-portal'); ?></button>
+            <a class="vfc-portal-btn" href="<?php echo esc_url(home_url('/portal/alumno/')); ?>"><?php esc_html_e('Limpiar', 'vfc-portal'); ?></a>
+        </div>
+    </form>
+
+    <?php if ($historial['total'] === 0 && !$hasHistorialFilters): ?>
         <p class="vfc-portal-muted"><?php esc_html_e('Todavía no hay movimientos en tu cuenta.', 'vfc-portal'); ?></p>
+    <?php elseif ($historial['total'] === 0): ?>
+        <p class="vfc-portal-muted"><?php esc_html_e('Ningún movimiento coincide con los filtros seleccionados.', 'vfc-portal'); ?></p>
     <?php else: ?>
         <div class="vfc-portal-table-wrap">
             <table class="vfc-portal-table">
@@ -102,7 +169,7 @@ $page = max(1, $historial['page']);
                     <?php if ($i === $page): ?>
                         <span class="vfc-portal-pager-current"><?php echo (int) $i; ?></span>
                     <?php else: ?>
-                        <a href="<?php echo esc_url(add_query_arg('page', $i)); ?>"><?php echo (int) $i; ?></a>
+                        <a href="<?php echo esc_url(add_query_arg(array_merge($historial_hf_query, ['page' => $i]), home_url('/portal/alumno/'))); ?>"><?php echo (int) $i; ?></a>
                     <?php endif; ?>
                 <?php endfor; ?>
             </nav>

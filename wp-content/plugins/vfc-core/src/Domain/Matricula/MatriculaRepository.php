@@ -130,11 +130,12 @@ final class MatriculaRepository
                 'alumno_user_id' => $alumnoUserId,
                 'alias' => $alias,
                 'qr_token_hash' => $pair['hash'],
+                'qr_token' => $pair['token'],
                 'creado_por' => get_current_user_id() ?: null,
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
-            ['%d', '%d', '%s', '%s', '%d', '%s', '%s']
+            ['%d', '%d', '%s', '%s', '%s', '%d', '%s', '%s']
         );
         if ($result === false) {
             throw new \RuntimeException(__('No se pudo crear la matrícula.', 'vfc-core'));
@@ -188,11 +189,29 @@ final class MatriculaRepository
     }
 
     /**
-     * Rota el token (cuando hay reenvío).
+     * Token QR en claro asociado a la matrícula (único e inmutable tras creación).
+     * Filas antiguas sin columna `qr_token` rellenada reciben un token una sola vez al primer acceso.
      *
-     * @return string token en claro recién generado
+     * @throws \RuntimeException
      */
-    public function rotateToken(int $id): string
+    public function getPlainQrToken(int $id): string
+    {
+        $matricula = $this->find($id);
+        if ($matricula === null) {
+            throw new \RuntimeException(__('Matrícula no encontrada.', 'vfc-core'));
+        }
+        if ($matricula->qrToken !== '') {
+            return $matricula->qrToken;
+        }
+
+        return $this->materializeQrTokenForLegacyRow($id);
+    }
+
+    /**
+     * Compatibilidad con matrículas creadas antes de persistir `qr_token` en BD.
+     * Genera un par hash+token una vez; invalida cualquier enlace previo imposible de reconstruir sin el secreto.
+     */
+    private function materializeQrTokenForLegacyRow(int $id): string
     {
         global $wpdb;
         $table = Schema::table(Schema::TABLE_MATRICULAS);
@@ -201,19 +220,26 @@ final class MatriculaRepository
         if ($matricula === null) {
             throw new \RuntimeException(__('Matrícula no encontrada.', 'vfc-core'));
         }
+        if ($matricula->qrToken !== '') {
+            return $matricula->qrToken;
+        }
 
         $pair = $this->qr->generate();
 
         $wpdb->update(
             $table,
-            ['qr_token_hash' => $pair['hash'], 'updated_at' => current_time('mysql', true)],
+            [
+                'qr_token_hash' => $pair['hash'],
+                'qr_token' => $pair['token'],
+                'updated_at' => current_time('mysql', true),
+            ],
             ['id' => $id],
-            ['%s', '%s'],
+            ['%s', '%s', '%s'],
             ['%d']
         );
 
         $edicion = $this->ediciones->find($matricula->edicionId);
-        AuditService::log('rotate_qr_token', self::ENTIDAD, $id, [], $edicion?->centroId);
+        AuditService::log('materialize_qr_token', self::ENTIDAD, $id, ['reason' => 'legacy_row'], $edicion?->centroId);
 
         return $pair['token'];
     }

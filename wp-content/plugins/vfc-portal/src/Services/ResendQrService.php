@@ -5,14 +5,14 @@ namespace VFC\Portal\Services;
 
 use VFC\Core\Domain\Matricula\MatriculaRepository;
 use VFC\Core\Services\AuditService;
+use VFC\Core\Services\QrEmailService;
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
 /**
- * Reenvio del QR al alumno: rota el token y dispara el hook que monta el email
- * (gestionado por QrEmailService de vfc-core).
+ * Reenvío del correo con el enlace QR (mismo token inmutable).
  */
 final class ResendQrService
 {
@@ -30,10 +30,11 @@ final class ResendQrService
             return false;
         }
         $alumnoId = (int) $matricula->alumnoUserId;
-        do_action('vfc_send_qr_to_alumno', $alumnoId);
+        $ok = (new QrEmailService())->sendForMatricula($matriculaId);
         AuditService::log('qr_resend_request', 'matricula', (int) $matricula->id, [
             'alumno_user_id' => $alumnoId,
+            'sent' => $ok,
         ]);
-        return true;
+        return $ok;
     }
 }

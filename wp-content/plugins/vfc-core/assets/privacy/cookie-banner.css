@@ -1,0 +1,81 @@
+html.vfc-cookie-banner-open {
+  padding-bottom: 0;
+}
+
+#vfc-cookie-banner {
+  position: fixed;
+  z-index: 100000;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 45vh;
+  overflow: auto;
+  background: #1a1a2e;
+  color: #f4f4f8;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.25);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+#vfc-cookie-banner[hidden] {
+  display: none !important;
+}
+
+#vfc-cookie-banner .vfc-cookie-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+#vfc-cookie-banner a {
+  color: #9dd9ff;
+  text-decoration: underline;
+}
+
+#vfc-cookie-banner .vfc-cookie-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  align-items: center;
+}
+
+#vfc-cookie-banner button {
+  cursor: pointer;
+  border: 0;
+  border-radius: 4px;
+  padding: 0.45rem 0.9rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+#vfc-cookie-banner .vfc-cookie-btn-primary {
+  background: #0f8;
+  color: #111;
+}
+
+#vfc-cookie-banner .vfc-cookie-btn-secondary {
+  background: #fff;
+  color: #1a1a2e;
+}
+
+#vfc-cookie-banner .vfc-cookie-btn-ghost {
+  background: transparent;
+  color: #f4f4f8;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+#vfc-cookie-prefs {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+#vfc-cookie-prefs[hidden] {
+  display: none !important;
+}
+
+#vfc-cookie-prefs label {
+  display: block;
+  margin: 0.35rem 0;
+}

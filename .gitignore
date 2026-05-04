@@ -13,6 +13,7 @@ wp-content/themes/index.php
 wp-content/themes/twentytwentythree/
 wp-content/themes/twentytwentyfour/
 wp-content/themes/twentytwentyfive/
+wp-content/themes/kadence/
 # Build / dependencias
 **/vendor/
 # Excepcion: el vendor del plugin vfc-portal (Endroid + deps) se commitea

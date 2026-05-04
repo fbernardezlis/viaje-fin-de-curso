@@ -6,6 +6,7 @@ namespace VFC\Woo\Rest;
 use VFC\Core\Domain\Edicion\EdicionRepository;
 use VFC\Core\Domain\Edicion\EstadoEdicion;
 use VFC\Core\Domain\Matricula\MatriculaRepository;
+use VFC\Core\Privacy\ConsentService;
 use VFC\Core\Services\AuditService;
 use VFC\Core\Services\QrTokenService;
 use VFC\Woo\Services\BeneficiarioSession;
@@ -91,6 +92,13 @@ final class QrEndpoint
             );
             $this->redirectHome(['vfc_qr' => 'inactiva']);
             return;
+        }
+
+        if (!ConsentService::allowsFunctional()) {
+            wp_safe_redirect(
+                home_url('/portal/qr/' . rawurlencode($token) . '?consent_required=1')
+            );
+            exit;
         }
 
         (new BeneficiarioSession($matriculas, $ediciones))->issueCookie((int) $matricula->id);

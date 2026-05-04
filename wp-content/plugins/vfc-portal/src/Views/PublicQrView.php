@@ -47,6 +47,8 @@ final class PublicQrView
             }
         }
 
+        $consentRequired = isset($_GET['consent_required']) && (string) wp_unslash($_GET['consent_required']) === '1';
+
         Layout::render(__('Comprar para un alumno', 'vfc-portal'), 'public-qr', [
             'token' => $token,
             'matricula' => $matricula,
@@ -54,6 +56,7 @@ final class PublicQrView
             'centro' => $centro,
             'invalid' => $invalid,
             'inactive' => $inactive,
+            'consent_required' => $consentRequired && !$invalid && !$inactive,
         ]);
     }
 }

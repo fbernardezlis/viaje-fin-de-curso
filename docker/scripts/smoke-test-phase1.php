@@ -78,11 +78,11 @@ $qr = new QrTokenService();
 $ok = $qr->verify($token, $matricula->qrTokenHash);
 $line("Token verifica: " . ($ok ? 'SI' : 'NO'));
 
-$nuevoToken = $matrRepo->rotateToken((int) $matricula->id);
-$matriculaTrasRotacion = $matrRepo->find((int) $matricula->id);
-$rotaOk = !$qr->verify($token, (string) $matriculaTrasRotacion?->qrTokenHash)
-    && $qr->verify($nuevoToken, (string) $matriculaTrasRotacion?->qrTokenHash);
-$line("Rotación de token correcta: " . ($rotaOk ? 'SI' : 'NO'));
+$reloaded = $matrRepo->find((int) $matricula->id);
+$tokenPersistido = $reloaded !== null && $reloaded->qrToken === $token && $qr->verify($token, $reloaded->qrTokenHash);
+$line("Token persistido en matrícula: " . ($tokenPersistido ? 'SI' : 'NO'));
+$t2 = $matrRepo->getPlainQrToken((int) $matricula->id);
+$line("getPlainQrToken idempotente: " . ($t2 === $token ? 'SI' : 'NO'));
 
 $cp = new CentroProductoRepository();
 $cp->setEstado((int) $centro->id, 99999, false);

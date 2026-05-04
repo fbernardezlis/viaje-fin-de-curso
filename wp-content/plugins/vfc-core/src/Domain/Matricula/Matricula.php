@@ -15,6 +15,7 @@ final class Matricula
         public readonly int $alumnoUserId,
         public readonly string $alias,
         public readonly string $qrTokenHash,
+        public readonly string $qrToken,
         public readonly ?int $creadoPor = null,
         public readonly ?string $createdAt = null,
         public readonly ?string $updatedAt = null
@@ -32,6 +33,7 @@ final class Matricula
             alumnoUserId: (int) ($row['alumno_user_id'] ?? 0),
             alias: (string) ($row['alias'] ?? ''),
             qrTokenHash: (string) ($row['qr_token_hash'] ?? ''),
+            qrToken: (string) ($row['qr_token'] ?? ''),
             creadoPor: isset($row['creado_por']) && $row['creado_por'] !== null ? (int) $row['creado_por'] : null,
             createdAt: self::nullable($row['created_at'] ?? null),
             updatedAt: self::nullable($row['updated_at'] ?? null),

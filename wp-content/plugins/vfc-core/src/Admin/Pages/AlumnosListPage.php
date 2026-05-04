@@ -137,7 +137,7 @@ final class AlumnosListPage
         }
         $matriculaId = isset($_GET['matricula_id']) ? (int) $_GET['matricula_id'] : 0;
         check_admin_referer('vfc_resend_qr_' . $matriculaId);
-        $this->qrEmail->sendForMatricula($matriculaId, true);
+        $this->qrEmail->sendForMatricula($matriculaId);
         $this->redirect(['vfc_notice' => 'qr_resent']);
     }
 
@@ -274,7 +274,7 @@ final class AlumnosListPage
         $messages = [
             'created' => __('Alumno creado y email de contraseña enviado.', 'vfc-core'),
             'password_resent' => __('Email de contraseña reenviado.', 'vfc-core'),
-            'qr_resent' => __('QR reenviado (token rotado).', 'vfc-core'),
+            'qr_resent' => __('Correo con el enlace QR reenviado al alumno.', 'vfc-core'),
         ];
         if (!empty($_GET['vfc_notice']) && isset($messages[(string) $_GET['vfc_notice']])) {
             printf(

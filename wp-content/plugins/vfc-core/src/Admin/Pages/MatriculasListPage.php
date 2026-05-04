@@ -101,7 +101,7 @@ final class MatriculasListPage
             $alumno = get_userdata($alumnoId);
             if ($alumno instanceof \WP_User
                 && get_user_meta($alumnoId, UsersService::META_QR_DELIVERED, true)) {
-                $this->qrEmail->sendForMatricula((int) $result['matricula']->id, false);
+                $this->qrEmail->sendForMatricula((int) $result['matricula']->id);
             }
         } catch (\RuntimeException $e) {
             $this->redirect([
@@ -122,7 +122,7 @@ final class MatriculasListPage
         }
         $matriculaId = isset($_GET['matricula_id']) ? (int) $_GET['matricula_id'] : 0;
         check_admin_referer('vfc_resend_qr_' . $matriculaId);
-        $this->qrEmail->sendForMatricula($matriculaId, true);
+        $this->qrEmail->sendForMatricula($matriculaId);
         $matricula = $this->matriculas->find($matriculaId);
         $this->redirect([
             'edicion_id' => $matricula?->edicionId ?? 0,
@@ -337,7 +337,7 @@ final class MatriculasListPage
     {
         $messages = [
             'created' => __('Matrícula creada y QR enviado (si el alumno ya tiene contraseña).', 'vfc-core'),
-            'qr_resent' => __('QR reenviado (token rotado).', 'vfc-core'),
+            'qr_resent' => __('Correo con el enlace QR reenviado al alumno.', 'vfc-core'),
             'deleted' => __('Matrícula eliminada.', 'vfc-core'),
             'renamed' => __('Alias actualizado.', 'vfc-core'),
         ];

@@ -1,6 +1,8 @@
 # Fase 3 — vfc-portal
 
-Plan vivo de la Fase 3. La Fase 2 (`vfc-woocommerce`) ya esta cerrada y en `main`. Esta fase introduce el portal frontend privado para alumnos, tutores y admins de colegio, con look propio (no parece WP), generacion de imagen QR y endpoints REST especificos para el portal.
+**Estado: cerrada** (última revisión: mayo 2026). La Fase 2 (`vfc-woocommerce`) está cerrada en `main`. Esta fase introduce el portal frontend privado para alumnos, tutores y admins de colegio, con look propio (no parece WordPress), imagen QR, enlaces permanentes y REST específico del portal.
+
+Documentación de la siguiente etapa: [PLAN-FASE4.md](PLAN-FASE4.md).
 
 ## Decisiones cerradas
 
@@ -38,12 +40,13 @@ wp-content/plugins/vfc-portal/
       RoleRedirector.php         (decide panel destino segun rol)
     Services/
       QrImageService.php         (Endroid; PNG/SVG; cache disco corto via transient)
-      ResendQrService.php        (rota token y reenvia mail; reusa QrEmailService)
+      ResendQrService.php        (reenvio de correo con mismo enlace; usa QrEmailService)
       DashboardService.php       (consultas agregadas para el admin de colegio)
     Views/
       LoginView.php
       ResetView.php
-      AlumnoView.php             (saldo + historial + QR)
+      HistorialRequestParams.php (lectura GET hf_* para filtros de historial)
+      AlumnoView.php             (saldo + historial filtrable + QR + URL)
       TutorView.php              (lista + switcher + reusa AlumnoView)
       ColegioView.php            (alumnos, ediciones, productos, liquidaciones)
       PublicQrView.php           (pre-cookie info + boton aceptar)
@@ -128,11 +131,13 @@ public function historial(array $args = []): array {
 }
 ```
 
-## QrImageService
+## QrImageService y token QR
 
-- Recibe `$matriculaId`. Carga la matricula. Si no se ha cargado nunca, se rota el token (porque no se almacena en claro) y se reemplaza el del email anterior. **Decision**: para evitar invalidar cookies activas, mejor que el alumno solicite QR explicitamente desde la vista (boton "Generar nuevo QR"), que rota y descarga la imagen en la misma respuesta.
-- Mientras tanto, el panel muestra un boton "Reenviar QR a mi email" que rota el token y dispara `vfc_send_qr_to_alumno`.
-- La imagen no se almacena: se sirve binaria (`Content-Type: image/png`).
+- El token en claro se guarda en `wp_vfc_matriculas.qr_token` al crear la matrícula (junto a `qr_token_hash`). **No se rota** al generar la imagen ni al abrir el portal.
+- Matrículas **legacy** sin `qr_token` rellenado: la primera consulta que necesite el secreto ejecuta una materialización única (`materialize_qr_token` en auditoría) y fija hash+token de forma definitiva.
+- `QrImageService::stream($matriculaId)` usa `MatriculaRepository::getPlainQrToken()` y codifica en PNG la URL pública `/qr/{token}` (Fase 2).
+- La imagen no se guarda en disco de forma persistente: respuesta binaria `Content-Type: image/png`.
+- En portal: campo de texto con URL, botón copiar, botón mostrar QR, enlace a imagen en nueva pestaña; reenvío vía `POST /vfc/v1/portal/qr/resend` solo reenvía el **mismo** enlace por email (`QrEmailService::sendForMatricula`).
 
 ## Vistas
 
@@ -141,7 +146,8 @@ public function historial(array $args = []): array {
 - Header con nombre alias y centro/edicion.
 - Tarjeta saldo: `bloqueado`, `confirmado` (= saldo activo no liquidado), `neto`.
 - Historial: tabla paginada. Filtros: edicion, estado, tipo, fechas.
-- Bloque QR: imagen (lazy o on-demand), URL acortada, boton copiar, boton reenviar.
+- Bloque QR: URL permanente (input + copiar), imagen on-demand, reenvío email, hint legal/UX.
+- Historial: formulario GET con prefijos `hf_edicion`, `hf_estado`, `hf_tipo`, `hf_from`, `hf_to`; paginación conserva filtros (`SaldoRepository::historial`).
 
 ### TutorView
 
@@ -159,17 +165,19 @@ public function historial(array $args = []): array {
 - Recibe `token` por URL. Resuelve hash y matricula. Si no es valido, mensaje de "QR invalido".
 - Si es valido: muestra alias + edicion + centro + texto explicativo "Las compras se vincularan al saldo de {alias}". Boton "Aceptar y comprar" -> redirige a `/qr/{token}` real (Fase 2) que emite la cookie y devuelve a la home.
 
-## Verificacion
+## Verificación
 
-Script `docker/scripts/smoke-test-phase3.php`:
-1. Activar plugins.
-2. Login programatico como alumno: visitar `/portal/alumno`, verificar 200 y presencia de saldo.
-3. Login como tutor con 2 alumnos vinculados: `/portal/tutor` lista 2; `MisAlumnosController` devuelve 2 con datos minimos.
-4. `/portal/qr/{token}` con token valido: muestra info + boton; con token invalido: mensaje error.
-5. `QrImageService` genera PNG no vacio para una matricula.
-6. `ResendQrController` rota token y dispara accion `vfc_send_qr_to_alumno`.
-7. Permisos: alumno NO accede a `/portal/colegio` (403); tutor NO accede a `/portal/alumno` salvo que sea su propio user; admin colegio accede al panel solo de centros que administra.
-8. SaldoRepository devuelve los importes correctos (con datos de Fase 2 reales).
+Script `docker/scripts/smoke-test-phase3.php` (datos efímeros + REST + PNG):
+
+1. Plugins cargados (`vfc-portal`).
+2. `SaldoRepository` / REST `/portal/saldo` y `/portal/movimientos` (incl. filtro `estado=BLOQUEADO`).
+3. Tutor: `/portal/mis-alumnos`.
+4. Admin colegio: `/portal/centro/{id}`.
+5. REST sin sesión → 401.
+6. `QrImageService` → bytes PNG (cabecera mágica `89504e47`).
+7. Permisos (`Permissions`): tutor solo ve alumnos vinculados; comprobaciones manuales en el script.
+
+Pruebas manuales recomendadas: `/portal/alumno` y `/portal/tutor/{id}` con filtros de historial y paginación; `/portal/login`; cookie de beneficiario vía `/qr/{token}` tras `/portal/qr/{token}`.
 
 ## Fuera de alcance Fase 3
 

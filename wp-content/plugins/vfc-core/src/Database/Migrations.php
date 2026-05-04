@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
 final class Migrations
 {
     public const OPTION_VERSION = 'vfc_db_version';
-    public const TARGET_VERSION = '1.1.0';
+    public const TARGET_VERSION = '1.2.0';
 
     /**
      * Ejecuta dbDelta en activación o cuando hay desfase de versión.

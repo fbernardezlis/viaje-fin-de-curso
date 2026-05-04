@@ -42,6 +42,14 @@ docker exec vfc-wordpress rm -f /tmp/disable-wc-coming-soon.php
 
 Luego recarga la web con **Ctrl+F5**. Si el hosting tiene caché, purgala.
 
+## Documentación de fases
+
+| Documento | Contenido |
+|-----------|-----------|
+| [docs/PLAN-MVP.md](docs/PLAN-MVP.md) | Alcance MVP, pasarela Redsys, fases 0–4 resumidas, riesgos. |
+| [docs/PLAN-FASE3.md](docs/PLAN-FASE3.md) | Portal `/portal/*` (**fase cerrada**): rutas, REST, QR inmutable, historial. |
+| [docs/PLAN-FASE4.md](docs/PLAN-FASE4.md) | **Siguiente etapa**: pagos, RGPD, i18n, despliegue, go-live. |
+
 ## Estructura
 
 | Ruta | Descripción |
@@ -88,7 +96,7 @@ Tercer argumento opcional: `login` o `email` concreto.
 
 ## Si falla la portada (`http://localhost:8080/`)
 
-Desde el contenedor la portada suele responder **HTTP 200** con el tema activo (`vfc-portal` hijo de Twenty Twenty-Five). Si en el navegador ves error, corta de carga o “no es posible conectar”:
+Desde el contenedor la portada suele responder **HTTP 200** con el tema activo (`vfc-portal` hijo de **Kadence**; el padre no va en git — ver `docker/scripts/install-kadence-theme.php`). Si en el navegador ves error, corta de carga o “no es posible conectar”:
 
 1. **URL y protocolo**: usa **`http://localhost:8080`** (no `https://` en local salvo que hayas configurado TLS; el certificado suele fallar y el navegador muestra error de seguridad).
 2. **Docker**: `docker compose ps` — el servicio `wordpress` debe estar *Up*. Si no, `docker compose up -d`.

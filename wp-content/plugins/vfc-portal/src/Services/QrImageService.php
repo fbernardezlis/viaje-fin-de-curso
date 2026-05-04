@@ -12,13 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Genera la imagen PNG del QR de una matricula.
- *
- * Como en la BD solo guardamos el hash del token, NO podemos reconstruir el token original.
- * Por eso el codigo flujo es:
- *  - Si el solicitante tiene permiso (alumno o tutor de ese alumno), rotamos el token y devolvemos
- *    la imagen del nuevo. La rotacion invalida automaticamente cualquier QR anterior, lo que
- *    evita que se filtre por error y mantiene el principio de "no almacenar el token en claro".
+ * Genera la imagen PNG del QR de una matrícula con el mismo enlace permanente que en BD.
  */
 final class QrImageService
 {
@@ -50,7 +44,7 @@ final class QrImageService
             exit;
         }
 
-        $token = $this->matriculas->rotateToken((int) $matricula->id);
+        $token = $this->matriculas->getPlainQrToken((int) $matricula->id);
         $url = $this->tokens->urlForToken($token);
 
         $png = $this->renderPng($url);
