@@ -55,17 +55,20 @@ Regla practica de cadencia:
 - revision diaria rapida (10-15 min);
 - maximo `Doing`: 2 tarjetas simultaneas.
 
-## 5) Flujo operativo para este proyecto (Azeta API)
+## 5) Flujo operativo para este proyecto (catalogo SINLI / proveedor)
+
+Referencia de orden al integrar **datos de catálogo** (formato y canal según lo acordado con la librería o distribuidora) — ver [PREGUNTAS-PROVEEDOR-SINLI.md](./PREGUNTAS-PROVEEDOR-SINLI.md).
 
 Secuencia recomendada:
 
-1. Seguridad y contrato API (auth, permisos, schema, errores).
-2. Creacion producto simple.
-3. Variaciones.
-4. Imagenes + allowlist.
-5. Metadatos Azeta.
-6. Tests de casos clave.
-7. Documentacion final de uso.
+1. Contrato y canal de entrega (formato ONIX/XML/CSV u otro, auth, SLAs).
+2. Parser y validación del fichero (esquema, encoding, registros de prueba).
+3. Mapeo a producto WooCommerce simple y reglas VFC (SKU/ISBN, precios, impuestos).
+4. Variaciones y formatos (si aplican).
+5. Imágenes y derechos de uso (URLs, allowlist, almacenamiento en medios WP).
+6. Metadatos propios del proveedor en custom fields / meta trazables.
+7. Sincronización (manual, CRON o cola) e idempotencia (sin duplicados).
+8. Tests de casos clave y documentación de uso operativo.
 
 ## 6) Plantilla minima de tarjeta
 

@@ -1,3 +1,0 @@
-(function() {
-    window._grpr = {"_v":"2.0.0","nativePrompt":null,"customPrompts":[],"paths":[]};
-})();

@@ -48,7 +48,11 @@ final class Plugin
         load_plugin_textdomain('vfc-core', false, dirname(plugin_basename(VFC_CORE_FILE)) . '/languages');
 
         Migrations::maybeUpgrade();
-        LegalPages::installOnce();
+        // LegalPages usa wp_insert_post → get_permalink; en WP, $wp_rewrite se crea *después* de
+        // plugins_loaded (wp-settings.php), así que aquí aún es null y provoca fatal en CLI y en cargas subsecuentes.
+        add_action('init', static function (): void {
+            LegalPages::installOnce();
+        }, 0);
 
         UsersService::registerHooks();
         QrEmailService::registerHooks();
