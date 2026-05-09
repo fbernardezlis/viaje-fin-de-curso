@@ -41,7 +41,11 @@ final class SettingsPage
             wp_die(esc_html__('No tienes permisos.', 'vfc-woocommerce'));
         }
 
-        $defaultPct = (string) get_option(PercentageService::OPTION_DEFAULT, '0');
+        $defaultPctEmpresa = (string) get_option(PercentageService::OPTION_DEFAULT_PCT_EMPRESA, '0');
+        $defaultPctAlumno = (string) get_option(PercentageService::OPTION_DEFAULT_PCT_ALUMNO, '');
+        if ($defaultPctAlumno === '') {
+            $defaultPctAlumno = (string) get_option(PercentageService::OPTION_DEFAULT, '0');
+        }
         $bloqueoDias = (int) get_option(PercentageService::OPTION_BLOQUEO_DIAS, 15);
 
         $url = add_query_arg(['page' => self::SLUG, 'action' => 'save'], admin_url('admin.php'));
@@ -57,12 +61,23 @@ final class SettingsPage
         wp_nonce_field(self::NONCE_ACTION, self::NONCE_FIELD);
         echo '<table class="form-table" role="presentation"><tbody>';
 
-        echo '<tr><th><label for="vfc-default-pct">' . esc_html__('Porcentaje global por defecto (%)', 'vfc-woocommerce') . '</label></th><td>';
+        echo '<tr><th><label for="vfc-default-pct-empresa">' . esc_html__('% beneficio empresa global (sobre precio base)', 'vfc-woocommerce') . '</label></th><td>';
         printf(
-            '<input type="number" min="0" max="100" step="0.01" id="vfc-default-pct" name="default_porcentaje" value="%s" /> ',
-            esc_attr($defaultPct)
+            '<input type="number" min="0" max="1000" step="0.01" id="vfc-default-pct-empresa" name="default_pct_empresa" value="%s" />',
+            esc_attr($defaultPctEmpresa)
         );
-        echo '<p class="description">' . esc_html__('Se aplica a todos los productos que no tengan un porcentaje específico configurado.', 'vfc-woocommerce') . '</p>';
+        echo '<p class="description">' . esc_html__('Se usa si el producto no define % empresa. Se suma al precio base junto con el % alumno.', 'vfc-woocommerce') . '</p>';
+        echo '</td></tr>';
+
+        echo '<tr><th><label for="vfc-default-pct-alumno">' . esc_html__('% beneficio alumno global (sobre precio base)', 'vfc-woocommerce') . '</label></th><td>';
+        printf(
+            '<input type="number" min="0" max="100" step="0.01" id="vfc-default-pct-alumno" name="default_pct_alumno" value="%s" />',
+            esc_attr($defaultPctAlumno)
+        );
+        echo '<p class="description">' . esc_html__(
+            'Abono al saldo por unidad = cantidad × (base × % / 100). Si está vacío se toma el antiguo «Porcentaje global por defecto» (vfc_default_porcentaje) hasta que lo sustituyas.',
+            'vfc-woocommerce'
+        ) . '</p>';
         echo '</td></tr>';
 
         echo '<tr><th><label for="vfc-bloqueo-dias">' . esc_html__('Días de bloqueo tras el pedido', 'vfc-woocommerce') . '</label></th><td>';
@@ -107,17 +122,30 @@ final class SettingsPage
         }
         check_admin_referer(self::NONCE_ACTION, self::NONCE_FIELD);
 
-        $pct = isset($_POST['default_porcentaje']) ? (string) $_POST['default_porcentaje'] : '0';
-        if (!is_numeric($pct)) {
-            $pct = '0';
+        $pctEmp = isset($_POST['default_pct_empresa']) ? (string) $_POST['default_pct_empresa'] : '0';
+        if (!is_numeric($pctEmp)) {
+            $pctEmp = '0';
         }
-        $pctF = (float) $pct;
-        if ($pctF < 0) {
-            $pctF = 0.0;
-        } elseif ($pctF > 100) {
-            $pctF = 100.0;
+        $pctEmpF = (float) $pctEmp;
+        if ($pctEmpF < 0) {
+            $pctEmpF = 0.0;
+        } elseif ($pctEmpF > 1000) {
+            $pctEmpF = 1000.0;
         }
-        update_option(PercentageService::OPTION_DEFAULT, $pctF);
+        update_option(PercentageService::OPTION_DEFAULT_PCT_EMPRESA, $pctEmpF);
+
+        $pctAlu = isset($_POST['default_pct_alumno']) ? (string) $_POST['default_pct_alumno'] : '';
+        if ($pctAlu === '' || !is_numeric($pctAlu)) {
+            delete_option(PercentageService::OPTION_DEFAULT_PCT_ALUMNO);
+        } else {
+            $pctAluF = (float) $pctAlu;
+            if ($pctAluF < 0) {
+                $pctAluF = 0.0;
+            } elseif ($pctAluF > 100) {
+                $pctAluF = 100.0;
+            }
+            update_option(PercentageService::OPTION_DEFAULT_PCT_ALUMNO, $pctAluF);
+        }
 
         $dias = isset($_POST['periodo_bloqueo_dias']) ? (int) $_POST['periodo_bloqueo_dias'] : 15;
         if ($dias < 0) {

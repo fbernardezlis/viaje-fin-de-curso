@@ -1,0 +1,474 @@
+.content-muro {
+	border: 1px solid #E6E6E6;
+	padding: 30px;
+}
+.content-muro .paginador {
+	float: none;
+	display: flex;
+	align-items: center;
+	padding: 10px 0 15px;
+	justify-content: flex-start;
+	height: auto;
+}
+.content-muro .paginador > a, .content-muro .paginador > span {
+	display: inline-block;
+	margin-right: 5px;
+}
+.content-muro button {
+	border: 0 none;
+	border-radius: 4px 4px 0 0;
+	cursor: pointer;
+	font-size: 13px;
+	margin-right: 4px;
+	font-weight: 600;
+	padding: 12px 14px;
+}
+.content-muro button.activo {
+	background-color: #FFF;
+	color: #CF0A4F;
+	border: 1px solid #E4E4E4;
+}
+.content-muro .btn_recibidos,
+.content-muro .btn_enviados,
+.content-muro .btn_archivados,
+.content-muro .btn_grupos {
+	background-color: #F7F9F9;
+}
+.content-muro .btn_recibidos.activo,
+.content-muro .btn_enviados.activo,
+.content-muro .btn_archivados.activo,
+.content-muro .btn_grupos.activo {
+	border-bottom: 1px solid #FFF;
+	background-color: transparent;
+}
+.content-muro .separator {
+	border-bottom: 1px solid #E4E4E4;
+	margin-bottom: 20px;
+	margin-top: -1px;
+	width: 100%;
+}
+.content-muro .acciones_secundarias {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 10px;
+}
+.content-muro .acciones_secundarias .busqueda_mensajes {
+	display: flex;
+	padding: 10px 0 15px;
+}
+.content-muro .acciones_secundarias .busqueda_mensajes input[type="text"] {
+	width: 200px;
+	height: 30px;
+	box-sizing: border-box;
+}
+.content-muro .acciones_secundarias .busqueda_mensajes input[type="submit"] {
+	background: #DE1F4B url(../images/ico-lupa2.png) no-repeat scroll center 8px;
+	background-size: 15px;
+	border: none;
+	height: 30px;
+	width: 30px;
+	box-sizing: border-box;
+	cursor: pointer;
+}
+.btn_nuevo_mensaje, .btn_generar_catalogo {
+	float: right;
+}
+.btn_nuevo_mensaje,
+.btn_generar_catalogo,
+.btn_responder {
+	background-color: #c10c36;
+	border-radius: 3px !important;
+	color: #ffffff;
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.4em;
+	margin-left: 10px;
+	padding: 6px 10px !important;
+}
+.btn_nuevo_mensaje:hover,
+.btn_generar_catalogo:hover,
+.btn_responder:hover {
+	background-color: #ad0c32;
+	color: #ffffff;
+}
+.content-muro .mensaje_busqueda {
+	padding: 0 0 20px 0;
+	font-size: 12px;
+	font-weight: bold;
+}
+.content-muro .mensaje {
+	overflow: hidden;
+	position: relative;
+	background-color: #F7F9F9;
+	border-bottom: 1px solid #D0D0D0;
+	padding: 10px 20px;
+}
+.content-muro.hilo-mensajes .cabecera .titulo {
+	cursor: pointer;
+}
+.content-muro.hilo-mensajes .mensaje.mensaje-open .cuerpo {
+	display: block;
+}
+.content-muro.hilo-mensajes .cuerpo {
+	display: none;
+}
+.content-muro .mensaje .cuerpo {
+	width: 100%;
+	margin-top: 15px;
+}
+.content-muro .mensaje .cuerpo .cabecera-cuerpo {
+	padding: 0 20px;
+	font-size: 12px;
+}
+.content-muro .mensaje .cuerpo .cabecera-cuerpo .titulo {
+	font-weight: bold;
+	line-height: 15px;
+}
+.content-muro .mensaje .cuerpo .cabecera-cuerpo .filtros {
+	padding: 0 20px 10px;
+	width: auto;
+	margin-bottom: 0;
+}
+.content-muro .mensaje .cuerpo .cabecera-cuerpo .multiples-destinatarios {
+	display: block;
+	padding: 0 20px;
+}
+.content-muro .mensaje .cuerpo .cabecera-cuerpo .multiples-destinatarios .resto-grupo {
+	display: none;
+}
+.content-muro .mensaje .cuerpo iframe {
+	box-sizing: border-box;
+	padding: 20px;
+	width: 100%;
+	height: 50px;
+	overflow: hidden;
+	border: none;
+}
+.content-muro .mensaje-open {
+	height: auto !important;
+}
+.content-muro .mensaje-recibido {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+
+	flex-direction: column;
+
+	/*-webkit-align-items: center;
+	-ms-flex-align: center;
+	align-items: center;*/
+}
+.content-muro .cabecera {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+
+	-webkit-justify-content: space-between;
+	-ms-justify-content: space-between;
+	justify-content: space-between;
+
+	width: 100%;
+	position: relative;
+	color: white;
+	font-weight: bold;
+	background-color: rgba(0, 0, 0, 0);
+	letter-spacing: 0;
+	box-sizing: border-box;
+	min-height: 30px;
+}
+.content-muro .cabecera .titulo {
+	display: flex;
+	align-items: center;
+	color: #333333;
+	font-size: 13px;
+	font-weight: 400;
+	letter-spacing: 0;
+	max-width: 70%;
+	margin-right: 10px;
+	overflow: hidden;
+}
+.content-muro .cabecera .titulo .titulo-sub .titulo-mensaje {
+	cursor: pointer;
+	line-height: 20px;
+}
+.content-muro .cabecera .titulo .titulo-sub .titulo-mensaje:hover,
+.content-muro .cabecera .titulo .titulo-sub .titulo-mensaje:active
+{
+	text-decoration: underline;
+	font-weight: bold;
+}
+.content-muro .cabecera .titulo .titulo-sub > span.remitente,
+.content-muro .cabecera .titulo .titulo-sub > span.destinatario {
+	font-size: 12px;
+	color: #666;
+	margin-top: 3px;
+}
+.content-muro .cabecera .titulo .titulo-sub > span.btn {
+	background-color: rgba(0, 0, 0, 0);
+	color: #CF0E3A;
+	font-size: inherit;
+	font-weight: bold;
+	margin-left: 10px;
+	padding-top: 0;
+	width: auto;
+	padding: 0;
+	vertical-align: baseline;
+	position: relative;
+	z-index: 100;
+}
+.content-muro .mensaje-no-leido {
+	background-color: rgba(0, 0, 0, 0);
+}
+.content-muro .mensaje-no-leido .cabecera {
+	background-color: rgba(0, 0, 0, 0);
+}
+.content-muro .mensaje-no-leido .cabecera .titulo {
+	color: #000;
+	font-weight: bold;
+}
+.content-muro .mensaje-no-leido .cabecera .titulo .titulo-sub > span.remitente,
+.content-muro .mensaje-no-leido .cabecera .titulo .titulo-sub > span.destinatario {
+	color: #000;
+	font-weight: 500;
+}
+.content-muro .cabecera .titulo img.icon-principal {
+	display: block;
+	margin-left: 15px;
+	width: 15px;
+}
+.content-muro .cabecera .fecha-mensaje {
+	color: #666666;
+	font-size: 12px;
+	font-weight: 400;
+	letter-spacing: 0;
+}
+.content-muro .cabecera .acciones {
+	text-align: right;
+	display: flex;
+	align-items: center;
+}
+.content-muro .cabecera .acciones > .btn {
+	background-color: #CF0E3A;
+	display: inline-block;
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 0.8em !important;
+	margin: 0 0 0 15px;
+	padding: 3px 0;
+	text-align: center;
+	vertical-align: middle;
+	width: 20px;
+}
+.content-muro .cabecera .acciones > .btn:hover {
+	background-color: #C10C36;
+	color: #FFF;
+}
+.content-muro .cabecera .acciones .btn_ver_mensaje {
+	background-color: rgba(0, 0, 0, 0);
+	color: #cf0e3a;
+	font-size: 13px;
+	font-weight: 600;
+	letter-spacing: 0;
+	margin-left: 20px;
+	text-decoration: underline;
+	padding-top: 0;
+	width: auto;
+}
+.content-muro .cabecera .acciones .btn_ver_mensaje:hover,
+.content-muro .cabecera .acciones .btn_ver_mensaje:active,
+.content-muro .cabecera .titulo .titulo-sub span.btn:hover,
+.content-muro .cabecera .titulo .titulo-sub span.btn:active {
+	background-color: rgba(0, 0, 0, 0);
+	box-shadow: none;
+	color: black;
+	text-decoration: none;
+}
+.content-muro .cabecera .acciones .reenviar,
+.content-muro .cabecera .acciones .borrar,
+.content-muro .cabecera .acciones .imprimir,
+.content-muro .cabecera .acciones .archivar {
+	background-position: center;
+	background-repeat: no-repeat;
+	width: 20px !important;
+	height: 19px;
+	padding: 0;
+}
+.content-muro .cabecera .acciones .reenviar {
+	background-image: url('../images/icon_email.png?v=02');
+	background-size: 14px;
+}
+.content-muro .cabecera .acciones .borrar {
+	background-image: url('../images/icon_trash.png?v=4');
+	background-size: 14px;
+}
+.content-muro .cabecera .acciones .imprimir {
+	background-image: url('../images/icon_printer.png?v=2');
+	background-size: 16px;
+}
+.content-muro .cabecera .acciones .archivar {
+	background-image: url('../images/icon_archive.png?v=1');
+	background-size: 14px;
+}
+.content-muro .cabecera .acciones form {
+	display: none;
+}
+.content-muro .respuestas {
+	padding: 0 10px 10px 20px;
+}
+.content-muro .respuesta {
+	display: none;
+}
+.bootstrap-dialog-draggable {
+	cursor: move;
+}
+#formMensaje textarea {
+	max-width: 100%;
+	min-width: 100%;
+}
+#formMensaje input[type="file"] {
+	margin: 20px 0 5px;
+}
+#formMensaje ul {
+	list-style-image: none;
+}
+.select2-container .select2-dropdown {
+	z-index: 2000;
+}
+
+/* Hilo mensajes */
+.acciones-cabecera {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+
+	-webkit-justify-content: space-between;
+	-ms-justify-content: space-between;
+	justify-content: space-between;
+
+	margin-bottom: 20px;
+}
+
+/* Botón para volver atrás */
+button.btn_responder.go-back {
+	background-image: url('/html/images/go-back.png?v=02');
+	background-repeat: no-repeat;
+	background-position: 10px;
+	background-size: 15px;
+	margin-left: 0;
+	padding-left: 35px !important;
+	font-weight: normal;
+}
+
+/* Muro Nuevo */
+.wall-agent {
+	background-color: #ffffff;
+	border-radius: 6px 6px 0 0;
+	margin-top: 38px;
+	padding: 10px 25px 12px 34px;
+	position: relative;
+	border: 1px solid #e6e6e6;
+	border-bottom: none;
+	box-shadow: 0 3px 5px 1px rgba(0, 0, 0, 0.05);
+}
+.wall-agent-foto {
+	border: 4px solid #ffffff;
+	border-radius: 50%;
+	box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+	height: 80px;
+	left: 26px;
+	margin-right: 20px;
+	overflow: hidden;
+	position: absolute;
+	text-align: center;
+	top: -10px;
+	width: 80px;
+}
+.wall-agent-foto img {
+	width: 80px;
+}
+.wall-agent-info {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+
+	-webkit-justify-content: space-between;
+	-ms-justify-content: space-between;
+	justify-content: space-between;
+
+	padding-left: 100px;
+}
+.wall-agent-info p {
+	font-size: 14px;
+	margin-bottom: 0;
+}
+.wall-agent-name {
+	font-weight: 700;
+}
+.wall-agent-phone-email {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+
+	-webkit-justify-content: space-between;
+	-ms-justify-content: space-between;
+	justify-content: space-between;
+}
+.wall-agent-phone-email p {
+	-webkit-align-self: center;
+	align-self: center;
+}
+.wall-agent-phone,
+.wall-agent-email {
+	padding-left: 24px;
+	font-size: 13px;
+	color: #333;
+	-webkit-align-self: center;
+	align-self: center;
+}
+.wall-agent-phone {
+	background: rgba(0, 0, 0, 0) url('../images/ico-phone-small.png') no-repeat scroll 0 -1px;
+}
+.wall-agent-email {
+	margin-left: 30px;
+	background: rgba(0, 0, 0, 0) url('../images/ico-email-small.png') no-repeat scroll 0 -1px;
+}
+.wall-agent-email a {
+	color: #333;
+}
+.public-content .servicios h1 {
+	text-align: center;
+	margin-bottom: 12px;	
+}
+.public-content .servicios h2 {
+	color: #8c98a9;
+	font-size: 22px;
+	font-weight: 300;
+	line-height: 1.4em;
+	margin: 0 auto 40px auto;
+	max-width: 720px;
+	text-align: center;
+}
+.shadow {
+	display: none;
+}
+.wall-agent-name {
+	font-size: 15px;
+	font-weight: 700;
+	text-transform: uppercase;
+}
+
+/* Hacks */
+.id-mensaje {
+	display: none;
+	margin-right: 10px;
+}
+
+.destinatario {
+	margin-bottom: 5px;
+}
+.destinatario .icon-check {
+	display: inline-block;
+	vertical-align: bottom;
+	margin-left: 10px;
+}

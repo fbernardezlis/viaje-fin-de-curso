@@ -1,0 +1,82 @@
+var tagScript = '(?:<script.*?>)((\n|\r|.)*?)(?:<\/script>)';
+/**
+* Eval script fragment
+* @return String
+*/
+String.prototype.evalScript = function()
+{
+	return (this.match(new RegExp(tagScript, 'img')) || []).evalScript();
+};
+/**
+* strip script fragment
+* @return String
+*/
+String.prototype.stripScript = function()
+{
+	return this.replace(new RegExp(tagScript, 'img'), '');
+};
+/**
+* extract script fragment
+* @return String
+*/
+String.prototype.extractScript = function()
+{
+	var matchAll = new RegExp(tagScript, 'img');
+	return (this.match(matchAll) || []);
+};
+/**
+* Eval scripts
+* @return String
+*/
+Array.prototype.evalScript = function(extracted)
+{
+	var s = this.map(function(sr) {
+		var sc = (sr.match(new RegExp(tagScript, 'im')) || ['', ''])[1];
+		if (window.execScript && sc != '') {
+			window.execScript(sc);
+		} else {
+			window.setTimeout(sc,0);
+		}
+	});
+	return true;
+};
+/**
+* Map array elements
+* @param {Function} fun
+* @return Function
+*/
+// (ÁRL, 02/05/19) Lo comento porque da error al incluir el script de ReCaptcha (v2) de Google
+// Array.prototype.map = function(fun)
+// {
+// 	if (typeof fun !== "function") { return false; }
+// 	var i = 0, l = this.length;
+// 	for(i=0; i < l; i++) {
+// 		fun(this[i]);
+// 	}
+// 	return true;
+// };
+
+function SetContainerHTML(id, html, processScripts)
+{
+	var mydiv = document.getElementById(id);
+	mydiv.innerHTML = html;		
+		
+	if (processScripts != false)
+	{
+		var elementos = mydiv.getElementsByTagName('script');
+		
+		for (i=0; i < elementos.length; i++) 
+		{
+			old = document.getElementById('prefix'+i); 
+			if (old) mydiv.removeChild(old);
+			var elemento = elementos[i]; 
+			nuevoScript = document.createElement('script');
+			nuevoScript.text = elemento.innerHTML;
+			nuevoScript.type = 'text/javascript';
+			nuevoScript.id = 'prefix'+i;
+			if (elemento.src != null && elemento.src.length > 0);
+			{nuevoScript.src = elemento.src;}
+			elemento.parentNode.replaceChild(nuevoScript,elemento);
+		}
+	}
+}

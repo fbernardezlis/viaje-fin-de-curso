@@ -1,0 +1,566 @@
+#rightcol {
+	width: 100%;
+}
+.portadas2 a {
+	display: inline-block;
+	box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.25);
+	margin: 0 0 7px 3px;
+	height: 60px;
+	width: 60px;
+	position: relative;
+}
+.portadas2 a img {
+	display: inline-block;
+	background: #FFF;
+	max-height: 100%;
+	max-width: 100%;
+	width: auto;
+	height: auto;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: auto;
+}
+.warning.nueva-edicion {
+	box-sizing: border-box;
+	float: left;
+	margin: 9px 0 15px 24px;
+	width: 510px;
+}
+.filaDetalle .textoDisponibilidadFicha a.button, .book .bookinfo a.mod-atributos {
+	text-decoration: none;
+}
+.filaDetalle .textoDisponibilidadFicha a.button img {
+	height: 15px;
+	margin: 0 10px 0 -5px;
+	vertical-align: bottom;
+}
+.book .bookinfo div.filaDetalle.acciones {
+	margin-top: 25px;
+}
+.book .bookinfo .argumentosComerciales {
+    color: #333;
+    font-size: 13px;
+    line-height: 16px;
+	margin: 10px 0 0;
+}
+.filaDetalle.acciones a.print {
+	float: left;
+	text-decoration: none;
+}
+select.atributos-valores {
+	width: 150px;
+}
+select.valor-medida {
+	width: 100px;
+}
+a.volver-atras {
+	width: 92px;
+}
+.book .bookPrice .priceBox {
+	border: none;
+	margin-bottom: 10px;
+	padding: 0;
+}
+.book .bookPrice .priceBox .cantidad {
+    align-items: center;
+    margin: 0 0 10px;
+    padding: 0;
+}
+.book .bookPrice .priceBox .cantidad .cambiar-cantidad {
+	margin-right: 10px;
+	max-width: 90px;
+}
+.book .bookPrice .priceBox .cantidad .cantidadPack {
+	width: 30px;
+}
+.book .bookPrice .priceBox .precio {
+	padding: 0;
+}
+.book .bookPrice .priceBox .precio > span {
+	color: black;
+	font-weight: bold;
+	margin: 0;
+}
+.book .bookPrice .priceBox .rowPrice {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	border-bottom: 1px dotted #A9A9A9;
+	margin: 0;
+	padding: 5px;
+	width: auto !important;
+}
+.book .bookPrice .priceBox .rowPrice > p span {
+	font-size: 18px;
+	line-height: 1.2em;
+}
+#precio, #pvp, #su_pvp, #unidades_venta {
+	display: none;
+}
+.ratePvp a {
+	font-weight: normal;
+}
+.infoExtra video {
+	width: 100%;
+}
+.button.icon.addSinopsis {
+	float: right;
+	padding: 6px 8px;
+	width: 220px;
+}
+.button.icon.addSinopsis:before {
+	content: none;
+}
+.sinopsis p {
+	text-align: justify
+}
+.sinopsis.critica {
+	margin-top: 15px;
+}
+
+.sinopsisDetalle{
+	border: 1px solid grey;
+	border-radius: 20px;
+	text-align: center;
+	padding-bottom: 0px!important;
+	-webkit-transition: all 1s linear;
+    -moz-transition: all 1s linear;
+    -o-transition: all 1s linear;
+	transition: all 1s linear;
+	padding-bottom: 15px !important;
+	text-align: initial;
+	padding-left:15px!important;
+}
+
+.sinopsisDetalle p{
+	background-image: linear-gradient(to bottom, transparent, white);
+	overflow: hidden;
+	padding-bottom:10px;
+	-webkit-transition: all 1s linear;
+    -moz-transition: all 1s linear;
+    -o-transition: all 1s linear;
+	transition: all 2s linear;
+	transition-delay: 1s;
+
+}
+
+.non-expanded{
+	max-height: 70px;
+	overflow: hidden;
+}
+
+.sinopsisDetalle h2{
+	position: relative;
+    top: -20px;
+    margin-left: 0.8em!important;
+    background-color: #fff;
+    width: 5em;
+    padding-left: 0.5em;
+    color: black;
+    font-size: 20px !important;
+    text-transform: uppercase !important;
+	font-weight: bold;
+	margin-bottom: -10px!important;
+}
+.SinopsisPapeleria{
+	width: 13em!important;
+}
+.sinopsisDetalle p{
+	padding-left: 1.5em;
+	padding-right: 1.5em;
+}
+
+.book .bloque {
+	float: none;
+	overflow: visible;
+	padding: 0 0 0 15px;
+}
+.book .bloque .booksList {
+	display: inline-block;
+	overflow: visible;
+	width: 100%;
+}
+.book .bloque .sixcolumns.booksList li {
+	box-sizing: border-box;
+	margin: 7px 0 10px 12px;
+	padding: 0 10px 0 0;
+	width: 18%;
+}
+.book .bloque .booksList.sixcolumns li .botonComprar {
+	border-radius: 3px;
+	line-height: 19px;
+	margin: 1px 20px 0 0 !important;
+}
+.book .bloque .booksList.sixcolumns li .titulo {
+	padding-top: 10px;
+}
+.book .bloque .booksList.sixcolumns li .autor {
+	color: #555;
+	font-size: 0.9em;
+	line-height: 1.4em;
+	margin-bottom: 3px;
+}
+.articulosLote .box {
+	position: relative;
+}
+.articulosLote h2.box {
+	line-height: 1.8em;
+}
+.articulosLote .box .acciones {
+	position: absolute;
+	right: 10px;
+	top: 7px;
+}
+.articulosLote .booksList li.row-article {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border-bottom: 1px solid #999;
+	width: auto;
+	padding: 5px 0;
+	margin: 0 20px;
+}
+.articulosLote .booksList li.row-article:last-child {
+	border-bottom: none;
+}
+.articulosLote div.portadaArticulo {
+	display: flex;
+	align-items: center;
+	position: relative;
+	height: 70px;
+	width: 70px;
+}
+.articulosLote img.portadaArticulo {
+	display: flex;
+	max-width: 100%;
+	max-height: 100%;
+	margin: 0 auto;
+}
+.articulosLote div.portadaFlotante {
+	left: 70px;
+	box-shadow: none;
+	margin-top: 0;
+	position: absolute;
+}
+.articulosLote div.portadaFlotante img {
+	box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.25);
+}
+.articulosLote .datos {
+	width: 630px;
+}
+.articulosLote .datos > div {
+	box-sizing: border-box;
+	padding: 3px 0 3px 0;
+}
+.articulosLote .datos > div:first-child {
+	padding: 0 0 3px 0;
+}
+.articulosLote .datos > div:last-child {
+	padding: 3px 10px 0 0;
+}
+.articulosLote .datos > div span {
+	text-transform: none;
+}
+.articulosLote .datos > div > div > span {
+	white-space: nowrap;
+}
+.articulosLote .datos .titulo {
+	display: inline-block;
+	margin-bottom: 0;
+	padding-right: 5px;
+	width: 380px;
+	line-height: 14px;
+	font-size: 12px;
+	font-weight: bold;
+}
+.articulosLote .datos .titulo + div {
+	display: inline-block;
+	float: right;
+	text-align: right;
+	letter-spacing: -0.3px;
+	text-transform: none;
+	white-space: nowrap;
+	width: 235px;
+}
+
+.warning a {
+	text-decoration: underline;
+}
+
+#modalMensaje .modal-dialog {
+	width: 600px;
+}
+#modalMensaje .modal-body {
+	padding: 20px 20px 0;
+}
+#modalMensaje .warning {
+	box-sizing: border-box;
+	margin: 0;
+}
+#modalMensaje .modal-footer {
+	text-align: center;
+}
+
+.book .avisar-error {
+	margin-top: 25px;
+}
+.book .avisar-error a {
+	text-decoration: none;
+	color: #0099CC;
+}
+.book .avisar-error img {
+	margin-right: 5px;
+	width: 16px;
+}
+.book .avisar-error img,
+.book .avisar-error span {
+	vertical-align: middle;
+}
+
+/* Venta por embalaje */
+.book .venta_embalaje {
+	background-color: white;
+	border: 1px solid #FDB813;
+	border-radius: 3px;
+	padding: 0;
+}
+.book .venta_embalaje .row1 {
+	background-color: #FDB813;
+	margin: 0 0 20px;
+	padding: 5px 10px;
+	position: relative;
+}
+.book .venta_embalaje .row1 .titulo {
+	margin: 0 0 0 60px;
+}
+.book .venta_embalaje .row1 .icon-embalaje {
+	width: 45px;
+}
+.book .venta_embalaje .priceBox {
+	margin: 0;
+}
+.book .venta_embalaje .pedir .unitPrice {
+    background-color: #F5F5F5;
+    border: 1px solid #CCC;
+}
+.book .venta_embalaje .priceBox,
+.book .venta_embalaje .pedir {
+	padding: 0 12px 12px;
+}
+
+/* Autores */
+.autores .autor {
+	margin-bottom: 10px;
+}
+.autores .autor .nombre {
+	margin-bottom: 5px
+}
+.autores .autor img {
+	float: left;
+	margin: 5px 10px 5px 0;
+	max-width: 150px;
+	max-height: 300px;
+	border-radius: 10px;
+}
+
+/* Libros relacionados */
+.librosRelacionados a {
+	display: inline-block;
+	margin-right: 30px;
+}
+.librosRelacionados a:last-child {
+	margin: 0;
+}
+.librosRelacionados a img {
+	display: block;
+	max-width: 100px;
+	max-height: 150px;
+}
+
+.subtitulo{
+	text-transform: none !important;
+}
+
+.separador{
+	margin-bottom: 1.5em!important;
+}
+
+.separadorAncho{
+	margin-bottom: 2.5em!important;
+}
+
+
+.separadorLinea{
+	height: 1px;
+	width: 100%;
+	border-bottom: 1px dotted grey;
+	margin-top: 1.0em;
+    margin-bottom: 1.0em!important;
+}
+
+
+.sectionHeader{
+	display: flex;
+	align-items: center;
+	margin-bottom: 1.0em;
+}
+.sectionHeader h3{
+    background-color: #fff;
+    margin: 0px;
+    padding: 0px;
+    font-weight: bold;
+	font-size: 15px!important;
+	text-transform: uppercase !important;
+	margin-left: 0.5em;
+}
+
+.infotittle{
+
+}
+
+.iconImage{
+
+	width: 25px;
+	
+
+}
+.iconImage img{
+	height: 100%;
+	width: 100%;
+	filter: invert(52%) sepia(16%) saturate(6%) hue-rotate(314deg) brightness(93%) contrast(91%);
+}
+
+.edadRecomendadaDetalle{
+	display: flex;
+	align-items: center;
+	margin-bottom: 1.0em;
+}
+
+.edadRecomendadaImagen {
+
+
+
+}
+.edadRecomendadaImagen img{
+	height: 100%;
+	width: 100%;
+}
+
+.edadRecomendada{
+	margin-top: 1.2em;
+	margin-bottom: 1.2em;
+}
+
+.edadRecomendada .cabeceraDetalle{
+	float:left;
+}
+
+.edadRecomendadaDetalle p{
+	margin-bottom: 0px;
+	margin-left: 0.5em;
+}
+.audiencia{
+
+}
+
+.audienciaDetalle{
+	display: flex;
+	align-items: center;
+
+}
+
+.icono-1{
+	width: 20px;
+	height: 25px;
+	color: blue;
+}
+
+.icono-2{
+	width: 40px;
+	height: 25px;
+	color: blue;
+}
+
+.icono-3{
+	width: 60px;
+	height: 25px;
+	color: blue;
+}
+
+.icono-4{
+	width: 80px;
+	height: 25px;
+	color: blue;
+}
+
+.icono-5{
+	width: 100px;
+	height: 25px;
+	color: blue;
+}
+
+.boton-mas{
+	width: 25px;
+	border: none;
+	background-color: white;
+	outline:none;
+
+}
+.botoneraSinopsis{
+	text-align: center;
+}
+
+.boton-mas img{
+	height: 100%;
+	width: 100%;
+
+}
+.pendientesReservados{
+	background-color: #f8d7da; 
+	color: #721c24; 
+	padding: 0.7em;
+	border-radius: 5px; 
+	border: 1px solid #f5c6cb; 
+	flex: 1;  
+	margin: 0 10px;
+    margin-right: 5px;
+
+}
+.pendienteDatos{
+	display: flex; 
+	flex-direction: row; 
+	justify-content: space-between; 
+	align-items: center;
+	gap: 5px;
+}
+.ReservadosDatos{
+	display: flex; 
+	flex-direction: row; 
+	justify-content: space-between; 
+	align-items: center; 
+	gap: 5px;
+}
+
+.descuentoCliente{
+	display: flex; 
+	flex-direction: row;
+	width: 100%;
+	margin: 10px auto;
+	background-color: transparent; 
+	justify-content: center; 
+	align-items: center;
+}
+.descuento {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 1em;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #c3e6cb;
+    flex: 1;
+	margin-left: 5px;
+}

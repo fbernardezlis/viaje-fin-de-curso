@@ -1,0 +1,13 @@
+---
+description: Flujo Kanban para planificar y ejecutar cambios en este repo
+alwaysApply: true
+---
+
+# Kanban Flow
+
+- Trabajar siempre con tarjetas pequenas y movibles por estado: Backlog, Ready, Doing, Review, Done.
+- No iniciar una tarea en Doing sin Definition of Ready minima: objetivo, alcance, aceptacion.
+- Limitar WIP: maximo 2 tareas simultaneas en Doing.
+- Priorizar por: bloqueadores, riesgo tecnico, dependencias, valor.
+- Antes de implementar, confirmar dudas clave una a una.
+- Al cerrar una tarea, verificar Definition of Done: validacion, docs y siguiente paso.

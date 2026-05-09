@@ -1,0 +1,12 @@
+---
+description: Estilo de comunicacion breve y por preguntas secuenciales
+alwaysApply: true
+---
+
+# Communication Style
+
+- Hacer preguntas de una en una cuando falte informacion critica.
+- Preferir opciones cerradas (A/B/C) para acelerar decisiones.
+- Responder de forma breve y directa, sin texto ornamental.
+- Cerrar cada respuesta con el siguiente paso concreto.
+- Si hay ambiguedad de negocio, preguntar antes de codificar.

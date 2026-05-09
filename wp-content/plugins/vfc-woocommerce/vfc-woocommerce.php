@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       VFC WooCommerce
  * Plugin URI:        https://github.com/fbernardezlis/viaje-fin-de-curso
- * Description:       Integración de WooCommerce con VFC: QR por alumno+edición, sesión vinculada, cálculo del % al saldo del alumno y reglas de bloqueo/reembolso.
- * Version:           0.1.0
+ * Description:       Integración WooCommerce con VFC: QR, sesión beneficiario, precio desde coste base + % empresa/alumno (IVA vía Woo), metadatos en líneas de pedido, saldo y bloqueo/reembolso.
+ * Version:           0.2.0
  * Requires at least: 6.6
  * Requires PHP:      8.1
  * Requires Plugins:  woocommerce, vfc-core
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('VFC_WOO_VERSION', '0.1.0');
+define('VFC_WOO_VERSION', '0.2.0');
 define('VFC_WOO_FILE', __FILE__);
 define('VFC_WOO_DIR', plugin_dir_path(__FILE__));
 define('VFC_WOO_URL', plugin_dir_url(__FILE__));

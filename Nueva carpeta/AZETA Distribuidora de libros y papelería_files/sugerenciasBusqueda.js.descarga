@@ -1,0 +1,156 @@
+var busquedaActual = busquedaOriginal = '';
+var horaPulsacion = idTimeout = 0;
+
+function buscarSugerencia()
+{
+	buscarRapido();
+}
+
+function hacerLlamada(busqueda)
+{
+	// console.log('busqueda: ' + encodeURIComponent(busqueda));
+
+	$.ajax({
+		data: 'busqueda='+encodeURIComponent(busqueda),
+		url: '/html/lib/buscar/buscarSugerencias.php',
+		type: 'post',
+		success: function (respuesta) {
+			if (respuesta != '') {
+				$('#sugerenciasBusqueda').show();
+				$('#sugerenciasBusqueda').html(respuesta);
+			} else
+				$('#sugerenciasBusqueda').hide();
+		}
+	});
+}
+
+function comprobarTiempo(horaBuscar, busqueda)
+{
+	idTimeout = setTimeout(function() {
+		var tiempoAhora = new Date();
+		if (tiempoAhora.getTime() < horaBuscar)
+			comprobarTiempo(horaBuscar, busqueda);
+		else
+			hacerLlamada(busqueda);
+	}, 50);
+}
+
+// Se controla que si se pulsa ENTER no se realice una nueva llamada AJAX
+$('#inputBuscarCatalogos2').keydown(function(e)
+{
+	if (e.which == 13) {
+		$('#sugerenciasBusqueda').hide();
+		if (idTimeout > 0) {
+			clearTimeout(idTimeout);
+			idTimeout = 0;
+		}
+	}
+});
+
+// Se controla que solamente se realice la búsqueda si la tecla pulsada es un caracter alfanumérico
+$('#inputBuscarCatalogos2').keyup(function(e)
+{
+	if (e.which < 35 || e.which > 40)	// Si la tecla pulsada es un caracter alfanumérico
+	{
+		var busqueda = e.target.value.toLowerCase();
+		busquedaOriginal = busqueda;
+
+		if (busqueda.length > 2)	// Solamente se buscan sugerencias a partir del tercer caracter escrito
+		{
+			var horaBuscar = 0;
+			if (busquedaActual != busqueda)
+			{
+				busquedaActual = busqueda;
+				// Controlar el tiempo que tarda en lanzarse la búsqueda desde el último caracter escrito
+				horaPulsacion = new Date();
+				horaBuscar = horaPulsacion.getTime() + 500;	// Medio segundo de espera para realizar la búsqueda
+				if (idTimeout > 0) {
+					clearTimeout(idTimeout);
+					idTimeout = 0;
+				}
+				comprobarTiempo(horaBuscar, busqueda);
+			}
+		} else
+			$('#sugerenciasBusqueda').hide();
+	} else
+		if (e.which == 13)
+			$('#sugerenciasBusqueda').hide();
+});
+
+// Control para evitar el scroll con las flechas
+window.addEventListener('keydown', function(e) {
+	if ( [38, 40].indexOf(e.which) > -1 )
+		e.preventDefault();
+}, false);
+
+// Control para moverse entre las distintas sugerencias de la búsqueda mediante las flechas de arriba y abajo
+$(document).keyup(function(e)
+{
+	if (e.which == 13 || e.which == 38 || e.which == 40)	// ENTER y flechas
+	{
+		e.preventDefault();	// Evitar el scroll con las flechas
+		if ($('#inputBuscarCatalogos2').is($(':focus')) || $('a[class="sugerenciaSeleccionada"]').length > 0)
+		{
+			var sugerenciaSeleccionada = sugerenciaActual = null;
+
+			if (e.which == 38 || e.which == 40)
+			{
+				if (e.which == 38 && $('#inputBuscarCatalogos2').is($(':focus')) == false) {	// flecha arriba y el foco no está en el input
+					sugerenciaActual = $('a[class="sugerenciaSeleccionada"]');
+					if (sugerenciaActual.prev().length > 0)	// Si existe el anterior elemento
+						sugerenciaSeleccionada = sugerenciaActual.prev();
+					else
+						sugerenciaSeleccionada = $('#inputBuscarCatalogos2');
+				} else {
+					if (e.which == 40) {	// flecha abajo
+						if ( $('#inputBuscarCatalogos2').is($(':focus')) ) {	// Si el foco está en el input de búsqueda
+							sugerenciaActual = $('#inputBuscarCatalogos2');
+							sugerenciaSeleccionada = $('#sugerencia0');
+						} else {
+							sugerenciaActual = $('a[class="sugerenciaSeleccionada"]');
+							if ( sugerenciaActual.next().length > 0 )	// Si existe el siguiente elemento
+								sugerenciaSeleccionada = sugerenciaActual.next();
+							else
+								sugerenciaSeleccionada = $('#inputBuscarCatalogos2');
+						}
+					}
+				}
+
+				if (sugerenciaSeleccionada != null) {	// Si existe el elemento seleccionado
+					if (sugerenciaSeleccionada.is($('#inputBuscarCatalogos2'))) {
+						$('#inputBuscarCatalogos2').val(busquedaOriginal);
+						$('#inputBuscarCatalogos2').html(busquedaOriginal);
+					} else {
+						$('#inputBuscarCatalogos2').val(sugerenciaSeleccionada.text());
+						$('#inputBuscarCatalogos2').html(sugerenciaSeleccionada.text());
+					}
+					sugerenciaActual.removeClass('sugerenciaSeleccionada');
+					sugerenciaActual.blur();
+					sugerenciaSeleccionada.addClass('sugerenciaSeleccionada');
+					sugerenciaSeleccionada.focus();
+				}
+			}
+			else {
+				if (e.which == 13 && $('a[class="sugerenciaSeleccionada"]').length > 0)
+					window.location = $('a[class="sugerenciaSeleccionada"]').attr('href');
+				$('#sugerenciasBusqueda').hide();
+			}
+		}
+	}
+});
+
+// La capa con las sugerencias de búsqueda se oculta cuando se haga click fuera de ella
+$(document).mouseup(
+	function(e) {
+		var capaSugerencias = $('#sugerenciasBusqueda');
+		if (!capaSugerencias.is(e.target)	// Si el objetivo del click no es el div...
+			&& capaSugerencias.has(e.target).length === 0) {	// ...ni un descendiente del div
+			if ($('a[id^="sugerencia"]').is($(':focus')))
+				$(':focus').blur();	// Se quita el foco de la sugerencia
+		} else {
+			$('#inputBuscarCatalogos2').val($(':focus').text());
+			$('#inputBuscarCatalogos2').html($(':focus').text());
+		}
+		capaSugerencias.hide();
+	}
+);

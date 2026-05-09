@@ -7,6 +7,7 @@ use VFC\Core\Database\Schema;
 use VFC\Core\Domain\Edicion\EdicionRepository;
 use VFC\Core\Domain\Matricula\MatriculaRepository;
 use VFC\Core\Services\AuditService;
+use VFC\Woo\Services\PricingService;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -85,11 +86,24 @@ final class SaldoService
             if ($subtotal <= 0 || $productId <= 0) {
                 continue;
             }
-            $pct = $this->percent->forProduct($productId);
-            if ($pct <= 0) {
-                continue;
+            $qty = max(1, (int) $item->get_quantity());
+            $snapBase = $item->get_meta(PricingService::LINE_META_BASE_UNIT, true);
+            $product = wc_get_product($productId);
+            $importe = 0.0;
+            if ($snapBase !== '' && $snapBase !== false && is_numeric($snapBase)) {
+                $importe = round((float) $item->get_meta(PricingService::LINE_META_ALUMNO_LINE, true), 4);
+            } elseif ($product instanceof \WC_Product) {
+                $cfg = PricingService::effectiveBaseAndPcts($product);
+                if ($cfg !== null && $cfg['base'] > 0 && $cfg['pct_alumno'] > 0) {
+                    $importe = round($qty * $cfg['base'] * $cfg['pct_alumno'] / 100, 4);
+                }
             }
-            $importe = round($subtotal * $pct / 100, 4);
+            if ($importe <= 0 && $subtotal > 0) {
+                $pct = $this->percent->forProduct($productId);
+                if ($pct > 0) {
+                    $importe = round($subtotal * $pct / 100, 4);
+                }
+            }
             if ($importe <= 0) {
                 continue;
             }
