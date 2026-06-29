@@ -1,0 +1,70 @@
+De: Mónica García Valverde <monicagarcia@azetadistribuciones.es>
+Enviado: miércoles, 3 de junio de 2026 8:38
+Para: Francisco Bernárdez Lis <fbernardez@dempo.es>; Jorge Vargas Delgado <jvargas@azetadistribuciones.es>
+Asunto: Integración Base de Datos Azeta
+ 
+Buenos días,
+Después de la reunión mantenida ayer os paso el resumen de los puntos tratados y de las diferentes opciones de integración que tenemos.
+ 
+Base de Datos de Azeta: el primer paso es contar con nuestro catálogo en vuestra plataforma online. En cuanto al catálogo de LIBROS, para comunicarlo tenemos dos opciones:
+Descarga mediante URL: fichero total mensual y actualizaciones semanales.
+FTP: si nos dais paso a una carpeta FTP podemos alojar dichos ficheros y ya vosotros los procesáis.
+ 
+En estos ficheros va incluido todo el fondo (libros vigentes con y sin stock), para filtrar o seleccionar una determinada temática hay que hacerlo posteriormente aplicando filtros por editorial, tema, etc.
+El servicio de catálogo que ofrece Azeta incluye no solo el acceso a toda la información necesaria para la comercialización de los libros —autor, título, precio, portadas, sinopsis y actualizaciones continuas—, sino también el mantenimiento técnico que garantiza que los datos estén siempre completos y fiables.
+Catálogo de papelería: el surtido de papelería lo tenemos estructurado en subfamilias para hacer más fácil el trabajo con la que os interese según la línea de negocio. Son las siguientes:
+Escolar
+Diseño
+Regalo
+Juegos y Juguetes
+Informática
+Este catálogo se obtiene mediante URL para la descarga del mismo.
+El acceso a esta información tiene un coste de implantación que cubre el trabajo inicial de configuración, asegurando que todo quede perfectamente preparado desde el primer día, además de una cuota mensual que permite mantener el servicio activo, incluyendo la actualización constante del catálogo, la gestión de cambios editoriales, el acceso permanente a los recursos gráficos y descriptivos, así como el soporte técnico necesario para asegurar un funcionamiento fluido y sin interrupciones.
+Podéis consultar dicho coste a través de esta URL:
+https://pwpush.com/p/x6gjszfwbtmop5bz/r
+ 
+ 
+2-      Disponibilidad: El fichero de disponibilidad se descarga en formato csv. Este fichero contiene los EAN y la cantidad de los libros que tenemos en stock en nuestro almacén (limitada a 50 ud, es decir, si hay más de 50 en stock, siempre aparecerá 50). Se genera cada hora.
+ 
+La información y estructura del fichero que descargas es la siguiente:
+Actualización cada hora.
+Contiene la cantidad real de cada libro, con límite 50 unidades. Es decir, en ejemplares que tengamos más de 50 siempre mostraremos como límite 50.
+Ejemplo, (EAN separado de ; la cantidad)
+9788476002032;2
+9788446002314;1
+9788446023517;1
+9788446027492;1
+9788446025191;2
+9788446032601;3
+9788446034308;1
+9788446024897;2
+ 
+Servicios Web: Una vez que se tiene la BD de datos integrada en vuestro sistema de gestión o plataforma web, también podemos proporcionar diversos servicios web para la comunicación de pedidos, ya sea en modalidad dropshipping o como pedido online y consulta del estado del pedido (tracking de seguimiento). Estos servicios no tienen coste alguno.
+ 
+Dropshipping: los envíos en modalidad Dropshipping tienen las siguientes características:
+ 
+Embalaje anónimo, bien caja o sobre de cartón según el tipo y cantidad de artículos a empaquetar
+Etiqueta exterior con vuestro nombre y datos comerciales
+Nota de contenido en el interior con vuestros datos y sin valorar
+Azeta no aparece en ningún punto del envío. La atención al cliente corre de vuestro lado, con Azeta tendréis que gestionar las posibles reclamaciones, pero nosotros nunca estableceremos relación con vuestros clientes.
+Coste: el servicio dropshipping tiene un coste de 3.20€+IVA por concepto de gastos de envío (precio que nos aplica la agencia de envíos a nosotros), que siempre se repercutirán en los envíos que hagamos, vosotros podéis trasladar a vuestros clientes el que consideréis oportuno.
+Hora de corte: todos los pedidos recibidos hasta las 14:00 se preparan y se entregan a la agencia para su reparto en el mismo día, siendo 24/48h el plazo habitual de entrega.
+ 
+ 
+Echadle un vistazo a toda esta información y en el caso de estar interesados, el siguiente paso sería firmar un contrato sencillo para dejar recogida la transmisión de datos y demás.
+ 
+Seguimos en contacto.
+ 
+Gracias
+ 
+Un cordial saludo
+Mónica García Valverde
+ 
+   
+ 
+ 627 302 443             916 866 892
+ 
+www.azeta.es              
+PULSE AQUÍ PARA VER LA POLÍTICA DE PROTECCIÓN DE DATOS
+ 
+ 

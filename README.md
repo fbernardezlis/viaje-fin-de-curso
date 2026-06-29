@@ -46,10 +46,11 @@ Luego recarga la web con **Ctrl+F5**. Si el hosting tiene caché, purgala.
 
 | Documento | Contenido |
 |-----------|-----------|
-| [docs/PLAN-MVP.md](docs/PLAN-MVP.md) | Alcance MVP, pasarela Redsys, fases 0–4 resumidas, riesgos. |
-| [docs/PLAN-FASE3.md](docs/PLAN-FASE3.md) | Portal `/portal/*` (**fase cerrada**): rutas, REST, QR inmutable, historial. |
-| [docs/PLAN-FASE4.md](docs/PLAN-FASE4.md) | **Siguiente etapa**: pagos, RGPD, i18n, despliegue, go-live. |
-| [docs/KANBAN-DESARROLLO.md](docs/KANBAN-DESARROLLO.md) | Metodo Kanban del equipo: prioridad, cadencia, DoR/DoD y flujo operativo. |
+| [docs/planificacion/PLAN-MVP.md](docs/planificacion/PLAN-MVP.md) | Alcance MVP, pasarela Redsys, fases 0–4 resumidas, riesgos. |
+| [docs/planificacion/PLAN-FASE3.md](docs/planificacion/PLAN-FASE3.md) | Portal `/portal/*` (**fase cerrada**): rutas, REST, QR inmutable, historial. |
+| [docs/planificacion/PLAN-FASE4.md](docs/planificacion/PLAN-FASE4.md) | **Siguiente etapa**: pagos, RGPD, i18n, despliegue, go-live. |
+| [docs/planificacion/KANBAN-DESARROLLO.md](docs/planificacion/KANBAN-DESARROLLO.md) | Metodo Kanban del equipo: prioridad, cadencia, DoR/DoD y flujo operativo. |
+| [docs/proveedores/azeta/INTEGRACION-WOOCOMMERCE.md](docs/proveedores/azeta/INTEGRACION-WOOCOMMERCE.md) | Integración catálogo, stock y pedidos Azeta → WooCommerce (VFC). |
 
 ## Estructura
 

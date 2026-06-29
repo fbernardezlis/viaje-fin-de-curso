@@ -2,7 +2,7 @@
 
 Fuente de verdad operativa del desarrollo. Metodología y definiciones: [KANBAN-DESARROLLO.md](./KANBAN-DESARROLLO.md).
 
-**Última actualización:** 2026-05-09 (épica SINLI / catálogo libro en Backlog)  
+**Última actualización:** 2026-06-29 (épica integración Azeta en Backlog)  
 **Límite WIP `Doing`:** máximo 2 tarjetas.
 
 ---
@@ -11,12 +11,12 @@ Fuente de verdad operativa del desarrollo. Metodología y definiciones: [KANBAN-
 
 *(Ideas o épicas sin refinar; aquí no entra desarrollo.)*
 
-### Épica: Integración SINLI — descarga/importación de catálogo (sector libro)
+### Épica: Integración Azeta — catálogo, stock y pedidos
 
-- **Para qué:** sincronizar productos/libros desde fuentes **SINLI** (ONIX/XML/CSV, DILVE, FTP/HTTP según contrato, etc.) hacia **WooCommerce / VFC**.
-- **Nota:** confirmar con la **librería** origen y formato real del proveedor. Lista de preguntas: [PREGUNTAS-PROVEEDOR-SINLI.md](./PREGUNTAS-PROVEEDOR-SINLI.md).
-- **Estado:** sin refinar; falta respuestas del proveedor y canal concreto de entrega.
-- **Siguiente paso:** reunión con librería/distribuidora usando el documento de preguntas → pasar tarjetas a Ready.
+- **Para qué:** sincronizar productos desde Azeta (ONIX 3.0 / FTP, CSV de disponibilidad) y enviar pedidos dropshipping vía servicios web hacia **WooCommerce / VFC**.
+- **Nota:** documentación técnica en [INTEGRACION-WOOCOMMERCE.md](../proveedores/azeta/INTEGRACION-WOOCOMMERCE.md).
+- **Estado:** diseño documentado; pendiente contrato y plugin `vfc-azeta`.
+- **Siguiente paso:** cerrar dudas abiertas con Azeta → tarjetas de Fase A (importador catálogo) a Ready.
 
 ---
 

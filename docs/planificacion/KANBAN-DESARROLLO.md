@@ -55,9 +55,9 @@ Regla practica de cadencia:
 - revision diaria rapida (10-15 min);
 - maximo `Doing`: 2 tarjetas simultaneas.
 
-## 5) Flujo operativo para este proyecto (catalogo SINLI / proveedor)
+## 5) Flujo operativo para este proyecto (catálogo Azeta)
 
-Referencia de orden al integrar **datos de catálogo** (formato y canal según lo acordado con la librería o distribuidora) — ver [PREGUNTAS-PROVEEDOR-SINLI.md](./PREGUNTAS-PROVEEDOR-SINLI.md).
+Referencia de orden al integrar **datos de catálogo y pedidos con Azeta** — ver [INTEGRACION-WOOCOMMERCE.md](../proveedores/azeta/INTEGRACION-WOOCOMMERCE.md).
 
 Secuencia recomendada:
 
